@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,6 +69,8 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }  // State untuk visibilitas password
+
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -74,9 +79,7 @@ fun RegisterScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.width(83.dp))
                     }
                 }
@@ -90,11 +93,14 @@ fun RegisterScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
-                    text = "Daftar",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    text = stringResource(R.string.daftar),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    fontSize = 36.sp,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -103,82 +109,57 @@ fun RegisterScreen(navController: NavHostController) {
                     modifier = Modifier
                         .width(300.dp)
                         .height(280.dp)
-                        .border(
-                            width = 0.5.dp,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(16.dp)
-                        )
+                        .border(width = 0.5.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp))
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                         .padding(8.dp)
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                             label = { Text("Email") },
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Email,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onNext = { passwordFocusRequest.requestFocus() }
-                            )
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { passwordFocusRequest.requestFocus() })
                         )
 
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                             label = { Text("Password") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    if (isValidCredentials(email, password)) {
-                                        navController.navigate(Screen.Home.route)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Invalid email or password",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    keyboardController?.hide()
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                if (isValidCredentials(email, password)) {
+                                    navController.navigate(Screen.Home.route)
+                                } else {
+                                    Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
                                 }
-                            )
+                                keyboardController?.hide()
+                            }),
+                            trailingIcon = {
+                                val iconId = if (passwordVisible) R.drawable.eye else R.drawable.eye_hide
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(painter = painterResource(id = iconId), contentDescription = if (passwordVisible) "Hide password" else "Show password")
+                                }
+                            }
                         )
+
                         Button(
                             onClick = {
                                 if (isValidCredentials(email, password)) {
                                     navController.navigate(Screen.Home.route)
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Invalid email or password",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
                                 }
                             },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = Color.White
-                            )
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary, contentColor = Color.White)
                         ) {
                             Text("Daftar")
                         }
@@ -186,9 +167,7 @@ fun RegisterScreen(navController: NavHostController) {
                         Text(
                             text = "Sudah memiliki akun? Masuk disini",
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.clickable {
-                                navController.navigate(Screen.Login.route)
-                            }.semantics { contentDescription = "Masuk disini" }
+                            modifier = Modifier.clickable { navController.navigate(Screen.Login.route) }.semantics { contentDescription = "Masuk disini" }
                         )
                     }
                 }

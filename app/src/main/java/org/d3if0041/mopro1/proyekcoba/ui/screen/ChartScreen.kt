@@ -39,7 +39,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListScreen(navController: NavHostController) {
+fun ChartScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -106,7 +106,6 @@ fun ListScreen(navController: NavHostController) {
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),
-                contentColor = MaterialTheme.colorScheme.primary,
                 content = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -114,9 +113,8 @@ fun ListScreen(navController: NavHostController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = {
-                                navController.navigate(Screen.List.route)
-                            }
+                            onClick = { navController.navigate(Screen.Home.route)},
+                            modifier = Modifier.width(60.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -138,24 +136,31 @@ fun ListScreen(navController: NavHostController) {
                                 )
                             }
                         }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Chart.route)
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.chart),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.statistik),
-                                fontSize = 9.sp,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.chart),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.statistik),
+                                    fontSize = 9.sp,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -178,9 +183,9 @@ fun ListScreen(navController: NavHostController) {
                         }
                         IconButton(
                             onClick = {
-                                // Navigasi ke layar lain saat ikon "More" diklik
                                 navController.navigate(Screen.Lain.route)
-                            }
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -194,13 +199,14 @@ fun ListScreen(navController: NavHostController) {
                                 )
                                 // Menggunakan string dari resource
                                 Text(
-                                    text = stringResource(R.string.lain), // Menggunakan resource string
+                                    text = stringResource(R.string.lain),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis,
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
+
                             }
                         }
                     }
@@ -226,8 +232,8 @@ fun ListScreen(navController: NavHostController) {
 
 @Preview(showBackground = true)
 @Composable
-fun ListScreenPreview() {
+fun ChartScreenPreview() {
     ProyekCobaTheme {
-        ListScreen(rememberNavController())
+        ChartScreen(rememberNavController())
     }
 }

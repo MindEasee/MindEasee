@@ -1,6 +1,5 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -64,6 +63,7 @@ fun LainScreen(navController: NavHostController) {
                     .padding(padding)
                     .fillMaxWidth()
             ) {
+                Spacer(modifier = Modifier.height(70.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -83,7 +83,9 @@ fun LainScreen(navController: NavHostController) {
                         Image(
                             painter = painterResource(R.drawable.casual),
                             contentDescription = null,
-                            modifier = Modifier.size(70.dp)
+                            modifier = Modifier
+                                .size(70.dp)
+                                .offset(y = 9.dp)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         Column(
@@ -93,7 +95,8 @@ fun LainScreen(navController: NavHostController) {
                             Text(
                                 text = "Email",
                                 fontSize = 18.sp,
-                                color = Color.Black
+                                color = Color.Black,
+                                modifier = Modifier.offset(y = 10.dp)  // Menggeser teks ke bawah sebesar 110 dp
                             )
                         }
                     }
@@ -192,6 +195,7 @@ fun LainScreen(navController: NavHostController) {
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                         .padding(16.dp)
                         .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp))
+                        .clickable { navController.navigate("loginScreen") { popUpTo(0) } } // Menggunakan navigate dan popUpTo untuk menghapus stack
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -221,7 +225,8 @@ fun LainScreen(navController: NavHostController) {
                             contentDescription = null,
                             modifier = Modifier.size(30.dp)
                         )
-                        Spacer(modifier = Modifier.width(12.dp))                    }
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
                 }
             }
         },
@@ -229,7 +234,6 @@ fun LainScreen(navController: NavHostController) {
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),
-                contentColor = MaterialTheme.colorScheme.primary,
                 content = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -237,9 +241,8 @@ fun LainScreen(navController: NavHostController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = {
-                                navController.navigate(Screen.List.route)
-                            }
+                            onClick = { navController.navigate(Screen.Home.route)},
+                            modifier = Modifier.width(60.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -261,24 +264,31 @@ fun LainScreen(navController: NavHostController) {
                                 )
                             }
                         }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Chart.route)
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.chart),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.statistik),
-                                fontSize = 9.sp,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.chart),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.statistik),
+                                    fontSize = 9.sp,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -301,9 +311,9 @@ fun LainScreen(navController: NavHostController) {
                         }
                         IconButton(
                             onClick = {
-                                // Navigasi ke layar lain saat ikon "More" diklik
                                 navController.navigate(Screen.Lain.route)
-                            }
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -317,16 +327,18 @@ fun LainScreen(navController: NavHostController) {
                                 )
                                 // Menggunakan string dari resource
                                 Text(
-                                    text = stringResource(R.string.lain), // Menggunakan resource string
+                                    text = stringResource(R.string.lain),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis,
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
+
                             }
                         }
                     }
+
                 }
             )
         },

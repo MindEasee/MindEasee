@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3if0041.mopro1.proyekcoba.R
@@ -116,7 +118,7 @@ fun MainScreen(navController: NavHostController) {
                                 fontSize = 17.sp
                             )
                         )
-                        EmoticonRow()
+                        EmoticonRow(navController)
                     }
                 }
                 GambarBawah()
@@ -124,8 +126,7 @@ fun MainScreen(navController: NavHostController) {
         },
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier.background(color = MaterialTheme.colorScheme.tertiary),
-                contentColor = Color.White,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),
                 content = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -133,11 +134,13 @@ fun MainScreen(navController: NavHostController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = {
-                                navController.navigate(Screen.List.route)
-                            }
+                            onClick = {},
+                                    modifier = Modifier.width(60.dp)
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
                                 Image(
                                     painter = painterResource(R.drawable.book),
                                     contentDescription = null,
@@ -149,26 +152,41 @@ fun MainScreen(navController: NavHostController) {
                                     fontSize = 9.sp,
                                     color = Color.Black,
                                     overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Image(
-                                painter = painterResource(R.drawable.chart),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.statistik),
-                                fontSize = 9.sp,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Chart.route)
+                            },
+                            modifier = Modifier.width(60.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.chart),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.statistik),
+                                    fontSize = 9.sp,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
                             Image(
                                 painter = painterResource(R.drawable.lampu),
                                 contentDescription = null,
@@ -180,16 +198,20 @@ fun MainScreen(navController: NavHostController) {
                                 fontSize = 9.sp,
                                 color = Color.Black,
                                 overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
+                                maxLines = 1,
+                                textAlign = TextAlign.Center
                             )
                         }
                         IconButton(
                             onClick = {
-                                // Navigasi ke layar lain saat ikon "More" diklik
                                 navController.navigate(Screen.Lain.route)
-                            }
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
                                 Image(
                                     painter = painterResource(R.drawable.more),
                                     contentDescription = null,
@@ -198,12 +220,14 @@ fun MainScreen(navController: NavHostController) {
                                 )
                                 // Menggunakan string dari resource
                                 Text(
-                                    text = stringResource(R.string.lain), // Menggunakan resource string
+                                    text = stringResource(R.string.lain),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 1
+                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
                                 )
+
                             }
                         }
                     }
@@ -232,7 +256,7 @@ fun MainScreen(navController: NavHostController) {
 }
 
 @Composable
-fun EmoticonRow() {
+fun EmoticonRow(navController: NavController) {
     val emoticonResIds = listOf(
         Pair(R.drawable.a, stringResource(id = R.string.sangat_baik)),
         Pair(R.drawable.b, stringResource(id = R.string.baik)),
@@ -243,31 +267,41 @@ fun EmoticonRow() {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        emoticonResIds.forEach { (emoticonResId, text) -> // Destructuring the Pair
+        emoticonResIds.forEach { (emoticonResId, text) ->
             val colorFilter = when (emoticonResId) {
-                R.drawable.a -> ColorFilter.tint(Color(0xFF009688)) // Hijau untuk gambar smiling
-                R.drawable.b -> ColorFilter.tint(Color(0xFF4CAF50)) // Tertiary untuk gambar happy
-                R.drawable.c -> ColorFilter.tint(Color(0xFF2196F3)) // Biru untuk gambar neutral
-                R.drawable.d -> ColorFilter.tint(Color(0xFFFF5900)) // Orange untuk gambar sad
-                R.drawable.e -> ColorFilter.tint(Color(0xD2FF0000)) // Merah untuk gambar crying
+                R.drawable.a -> ColorFilter.tint(Color(0xFF009688))
+                R.drawable.b -> ColorFilter.tint(Color(0xFF4CAF50))
+                R.drawable.c -> ColorFilter.tint(Color(0xFF2196F3))
+                R.drawable.d -> ColorFilter.tint(Color(0xFFFF5900))
+                R.drawable.e -> ColorFilter.tint(Color(0xD2FF0000))
                 else -> null
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable {  // Menambahkan aksi onClick
+                    navController.navigate(Screen.Entri.route)
+                }
+            ) {
                 Image(
                     painter = painterResource(id = emoticonResId),
                     contentDescription = null,
                     modifier = Modifier.size(48.dp),
-                    colorFilter = colorFilter // Mengatur colorFilter sesuai dengan warna yang diinginkan
+                    colorFilter = colorFilter
                 )
                 Text(
                     text = text,
                     fontSize = 11.sp,
                     color = Color.Black,
-                    lineHeight = 12.sp // Mengatur tinggi baris menjadi lebih rendah
+                    lineHeight = 12.sp
                 )
             }
         }
     }
+}
+
+@Composable
+fun SomeOtherComposable(navController: NavController) {
+    EmoticonRow(navController = navController)
 }
 
 @Composable

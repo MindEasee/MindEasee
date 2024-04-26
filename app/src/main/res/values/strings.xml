@@ -28,6 +28,8 @@
     <string name="password_lama">Password Lama</string>
     <string name="password_baru">Password Baru</string>
     <string name="konfirmasi_password">Konfirmasi Password</string>
-
+    <string name="masuk">Masuk</string>
+    <string name="daftar">Register</string>
+    <string name="teks_entri">Kabar Hari ini,\nBiasa</string>
 
 </resources>

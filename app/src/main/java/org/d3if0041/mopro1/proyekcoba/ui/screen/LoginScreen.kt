@@ -1,11 +1,11 @@
+package org.d3if0041.mopro1.proyekcoba.ui.screen
+
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.*
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -16,14 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +36,8 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) } // Menyimpan state visibilitas password
+
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -46,9 +46,7 @@ fun LoginScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.width(83.dp))
                     }
                 }
@@ -62,15 +60,16 @@ fun LoginScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
-                    text = "Masuk",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    text = stringResource(R.string.masuk),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    fontSize = 36.sp,
+                    modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Box(
                     modifier = Modifier
                         .width(300.dp)
@@ -89,8 +88,6 @@ fun LoginScreen(navController: NavHostController) {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
@@ -106,7 +103,6 @@ fun LoginScreen(navController: NavHostController) {
                                 onNext = { passwordFocusRequest.requestFocus() }
                             )
                         )
-
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
@@ -114,7 +110,7 @@ fun LoginScreen(navController: NavHostController) {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             label = { Text("Password") },
-                            visualTransformation = PasswordVisualTransformation(),
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Password,
                                 imeAction = ImeAction.Done
@@ -132,9 +128,14 @@ fun LoginScreen(navController: NavHostController) {
                                     }
                                     keyboardController?.hide()
                                 }
-                            )
+                            ),
+                            trailingIcon = {
+                                val icon = if (passwordVisible) R.drawable.eye else R.drawable.eye_hide
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(painter = painterResource(id = icon), contentDescription = "Toggle password visibility")
+                                }
+                            }
                         )
-
                         Button(
                             onClick = {
                                 if (isValidCredentials(email, password)) {
@@ -157,7 +158,6 @@ fun LoginScreen(navController: NavHostController) {
                         ) {
                             Text("Masuk")
                         }
-
                         Text(
                             text = "Belum memiliki akun? Daftar disini",
                             style = MaterialTheme.typography.bodyMedium,
@@ -171,7 +171,6 @@ fun LoginScreen(navController: NavHostController) {
         }
     )
 }
-
 private fun isValidCredentials(email: String, password: String): Boolean {
     return email.isNotEmpty() && password.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
