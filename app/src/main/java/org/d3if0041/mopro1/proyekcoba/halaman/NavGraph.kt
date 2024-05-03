@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.d3if0041.mopro1.proyekcoba.ui.screen.AddScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.AwalScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.ChartScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.EntriScreen
@@ -23,7 +24,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.RegisterScreen
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Awal.route // Mulai dari halaman awal
+        startDestination = Screen.Home.route // Mulai dari halaman awal
     ) {
         composable(route = Screen.Awal.route) {
             AwalScreen(navController)
@@ -54,6 +55,9 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Entri.route) {
             EntriScreen(navController)
+        }
+        composable(route = Screen.Add.route) {
+            AddScreen(navController)
         }
     }
 }

@@ -12,4 +12,6 @@ sealed class Screen (val route:String) {
     data object Password: Screen("passwordScreen")
     data object Chart: Screen("chartScreen")
     data object Entri: Screen("entriScreen")
+    data object Add: Screen("addScreen")
+
 }

@@ -238,6 +238,7 @@ fun MainScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                    navController.navigate(Screen.Add.route)
                 },
                 modifier = Modifier
                     .padding(vertical = 8.dp)
