@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -58,7 +59,11 @@ fun OpenScreen(navController: NavController) {
             Spacer(modifier = Modifier.weight(1f)) // Memberikan bobot agar kolom teks memenuhi sisa ruang yang tersedia
             Button(
                 onClick = {
-                    navController.navigate("loginScreen")
+                    try {
+                        navController.navigate("loginScreen")
+                    } catch (e: Exception) {
+                        Log.e("NavigationError", "Failed to navigate to loginScreen", e)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,

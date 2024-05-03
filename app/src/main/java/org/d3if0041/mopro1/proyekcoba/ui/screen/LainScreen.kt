@@ -43,16 +43,17 @@ fun LainScreen(navController: NavHostController) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        Spacer(modifier = Modifier.width(100.dp))
+
                         Text(
                             text = "Lainnya",
                             color = Color.Black,
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 28.sp
+                                fontSize = 36.sp
                             ),
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
             )
@@ -63,7 +64,7 @@ fun LainScreen(navController: NavHostController) {
                     .padding(padding)
                     .fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(30.dp))
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

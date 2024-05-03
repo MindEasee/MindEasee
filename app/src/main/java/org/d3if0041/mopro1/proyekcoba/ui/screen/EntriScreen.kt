@@ -9,13 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +33,7 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -45,152 +42,257 @@ fun EntriScreen(navController: NavHostController) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }  // Default to the current date
-    var selectedTime by remember { mutableStateOf(LocalTime.now()) }  // Default to the current time
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
 
     Scaffold { padding ->
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.TopCenter
+                .padding(padding)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                ) {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.back),
-                            contentDescription = "Back",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f)) // Use weight to push the icon to the left
-                }
-                // Box placed here, directly after the Row containing the IconButton
+            item {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .padding(16.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(16.dp)
-                        )
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.TopCenter
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(top = 16.dp)
                     ) {
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Image(
-                            painter = painterResource(R.drawable.casual),
-                            contentDescription = null,
-                            modifier = Modifier.size(50.dp)
-                                .offset(y = 9.dp)
-
-                        )
-                        Spacer(modifier = Modifier.width(30.dp))
-                        Text(
-                            text = stringResource(R.string.teks_entri),
-                            fontSize = 20.sp,
-                            color = Color.Black,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                                .offset(y = 9.dp)
-
-                        )
-                    }
-                }
-                // Row for "Tanggal" and "Jam" buttons with displays directly below each
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Button(
-                            onClick = { showDatePicker = true },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                            modifier = Modifier.width(140.dp).height(35.dp),
-                            shape = RoundedCornerShape(12.dp)
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
                         ) {
-                            Text(text = "Tanggal", color = Color.Black)
+                            IconButton(
+                                onClick = { navController.popBackStack() },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.back),
+                                    contentDescription = "Back",
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
                         }
-                        // Display the selected date directly below the "Tanggal" button
-                        if (selectedDate != null) {
-                            Text(
-                                text = "${selectedDate.format(java.time.format.DateTimeFormatter.ofPattern("dd MMMM yyyy"))}",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
-                        }
-                    }
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Button(
-                            onClick = { showTimePicker = true },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                            modifier = Modifier.width(140.dp).height(35.dp),
-                            shape = RoundedCornerShape(12.dp)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                                .padding(16.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Gray,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
                         ) {
-                            Text(text = "Jam", color = Color.Black)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Image(
+                                    painter = painterResource(R.drawable.casual),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .offset(y = 9.dp)
+                                )
+                                Spacer(modifier = Modifier.width(30.dp))
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Text(
+                                        text = "Kabar hari ini,\nBiasa",
+                                        fontSize = 18.sp,
+                                        color = Color.Black,
+                                        modifier = Modifier.offset(y = 6.dp)
+                                    )
+                                }
+                            }
                         }
-                        // Display the selected time directly below the "Jam" button
-                        if (selectedTime != null) {
+                        Spacer(modifier = Modifier.height(2.dp)) //
+
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Button(
+                                    onClick = { showDatePicker = true },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                                    modifier = Modifier.width(140.dp).height(35.dp),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(text = "Tanggal", color = Color.Black)
+                                }
+                                if (selectedDate != null) {
+                                    Text(
+                                        text = "${selectedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))}",
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(top = 8.dp)
+                                    )
+                                }
+                            }
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Button(
+                                    onClick = { showTimePicker = true },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                                    modifier = Modifier.width(140.dp).height(35.dp),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(text = "Jam", color = Color.Black)
+                                }
+                                if (selectedTime != null) {
+                                    Text(
+                                        text = "${selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(top = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .width(330.dp)
+                                .height(180.dp)
+                                .padding(2.dp) // Padding eksternal untuk keseluruhan Box
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                .background(Color.White, RoundedCornerShape(8.dp))
+                        ) {
                             Text(
-                                text = "${selectedTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))}",
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(top = 8.dp)
+                                "Deskripsikan masalah dan situasi saat ini.",
+                                modifier = Modifier
+                                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontSize = 12.sp,
                             )
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(180.dp)
+                                    .padding(
+                                        top = 32.dp,
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                    .background(Color.White, RoundedCornerShape(8.dp))
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(290.dp)
+                                .padding(16.dp) // Padding eksternal untuk keseluruhan Box
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                .background(Color.White, RoundedCornerShape(8.dp))
+                        ) {
+                            Column {
+                                Text(
+                                    "Apa yang sedang kamu pikirkan?",
+                                    modifier = Modifier
+                                        .padding(start = 17.dp, top = 16.dp, end = 16.dp),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontSize = 12.sp,
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+                                        .padding(
+                                            top = 5.dp,
+                                            start = 16.dp,
+                                            end = 16.dp,
+                                            bottom = 16.dp
+                                        )
+                                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                        .background(Color.White, RoundedCornerShape(8.dp))
+                                        .padding(16.dp),
+                                )
+
+                                Text(
+                                    "Bagaimana solusinya?",
+                                    modifier = Modifier
+                                        .padding(start = 17.dp, top = 0.dp, end = 5.dp),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontSize = 12.sp,
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+                                        .padding(
+                                            top = 5.dp,
+                                            start = 16.dp,
+                                            end = 16.dp,
+                                            bottom = 16.dp
+                                        )
+                                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                                        .background(Color.White, RoundedCornerShape(8.dp))
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+
+                                }
+                            }
+                        }
+
+
+
+                        if (showDatePicker) {
+                            val calendar = Calendar.getInstance()
+                            val year = calendar.get(Calendar.YEAR)
+                            val month = calendar.get(Calendar.MONTH)
+                            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                            DatePickerDialog(
+                                context,
+                                { _: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                                    selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth)
+                                    showDatePicker = false
+                                },
+                                year,
+                                month,
+                                day
+                            ).show()
+                        }
+
+                        if (showTimePicker) {
+                            val hour = selectedTime.hour
+                            val minute = selectedTime.minute
+
+                            TimePickerDialog(context, { _, hourOfDay, minute ->
+                                selectedTime = LocalTime.of(hourOfDay, minute)
+                                showTimePicker = false
+                            }, hour, minute, true).show()
                         }
                     }
-                }
-
-                // Date Picker Dialog
-                if (showDatePicker) {
-                    val calendar = Calendar.getInstance()
-                    val year = calendar.get(Calendar.YEAR)
-                    val month = calendar.get(Calendar.MONTH)
-                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-                    DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
-                        selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth)
-                        showDatePicker = false
-                    }, year, month, day).show()
-                }
-
-                // Time Picker Dialog
-                if (showTimePicker) {
-                    val hour = selectedTime.hour
-                    val minute = selectedTime.minute
-
-                    TimePickerDialog(context, { _, hourOfDay, minute ->
-                        selectedTime = LocalTime.of(hourOfDay, minute)
-                        showTimePicker = false
-                    }, hour, minute, true).show()
                 }
             }
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
