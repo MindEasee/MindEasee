@@ -123,7 +123,6 @@ fun EntriScreen(navController: NavHostController) {
                         }
                         Spacer(modifier = Modifier.height(2.dp)) //
 
-
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier
@@ -197,13 +196,14 @@ fun EntriScreen(navController: NavHostController) {
                                     .padding(16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
+                                // Your content
                             }
                         }
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(290.dp)
-                                .padding(16.dp) // Padding eksternal untuk keseluruhan Box
+                                .padding(16.dp)
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                                 .background(Color.White, RoundedCornerShape(8.dp))
                         ) {
@@ -252,12 +252,10 @@ fun EntriScreen(navController: NavHostController) {
                                         .padding(16.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-
+                                    // Your content
                                 }
                             }
                         }
-
-
 
                         if (showDatePicker) {
                             val calendar = Calendar.getInstance()
@@ -289,10 +287,23 @@ fun EntriScreen(navController: NavHostController) {
                     }
                 }
             }
+
+            item {
+                Button(
+                    onClick = { /* Handle button click */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .width(300.dp)
+                        .padding(16.dp)
+                        .height(50.dp)
+                ) {
+                    Text(text = "Tambah")
+                }
+            }
         }
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

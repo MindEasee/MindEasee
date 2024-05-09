@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -122,6 +123,7 @@ fun RegisterScreen(navController: NavHostController) {
                             value = email,
                             onValueChange = { email = it },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            maxLines = 1,
                             label = { Text("Email") },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(onNext = { passwordFocusRequest.requestFocus() })
@@ -131,6 +133,7 @@ fun RegisterScreen(navController: NavHostController) {
                             value = password,
                             onValueChange = { password = it },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            maxLines = 1,
                             label = { Text("Password") },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
@@ -164,12 +167,47 @@ fun RegisterScreen(navController: NavHostController) {
                             Text("Daftar")
                         }
 
-                        Text(
-                            text = "Sudah memiliki akun? Masuk disini",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.clickable { navController.navigate(Screen.Login.route) }.semantics { contentDescription = "Masuk disini" }
-                        )
+                        Row(
+                            modifier = Modifier
+                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
+                                .fillMaxWidth(),  // Mengisi lebar maksimal
+                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
+                        ) {
+                            Text(
+                                text = "Sudah memiliki akun? ",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Masuk disini",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.clickable { navController.navigate(Screen.Login.route) }
+                                    .semantics { contentDescription = "Masuk disini" }
+                            )
+                        }
                     }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = "Hi!",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 50.sp
+                        ),
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .align(Alignment.Top)
+                            .offset(20.dp)
+
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.man), // Replace with the correct image source
+                        contentDescription = "Deskripsi gambar",
+                        modifier = Modifier
+                            .size(300.dp)
+                    )
                 }
             }
         }

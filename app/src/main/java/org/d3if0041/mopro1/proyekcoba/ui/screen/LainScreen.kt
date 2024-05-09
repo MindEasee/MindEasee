@@ -231,7 +231,6 @@ fun LainScreen(navController: NavHostController) {
                 }
             }
         },
-
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),
@@ -291,28 +290,34 @@ fun LainScreen(navController: NavHostController) {
                                 )
                             }
                         }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Tips.route)
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.lampu),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.tips),
-                                fontSize = 9.sp,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.lampu),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.tips),
+                                    fontSize = 9.sp,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                         IconButton(
                             onClick = {
-                                navController.navigate(Screen.Lain.route)
                             },
                             modifier = Modifier.width(60.dp)
                         ) {
@@ -335,7 +340,6 @@ fun LainScreen(navController: NavHostController) {
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
-
                             }
                         }
                     }

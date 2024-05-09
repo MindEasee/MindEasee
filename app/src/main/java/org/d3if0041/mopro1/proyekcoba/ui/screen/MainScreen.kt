@@ -135,7 +135,7 @@ fun MainScreen(navController: NavHostController) {
                     ) {
                         IconButton(
                             onClick = {},
-                                    modifier = Modifier.width(60.dp)
+                            modifier = Modifier.width(60.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -158,9 +158,7 @@ fun MainScreen(navController: NavHostController) {
                             }
                         }
                         IconButton(
-                            onClick = {
-                                navController.navigate(Screen.Chart.route)
-                            },
+                            onClick = { navController.navigate(Screen.Chart.route)},
                             modifier = Modifier.width(60.dp)
                         ) {
                             Column(
@@ -183,24 +181,31 @@ fun MainScreen(navController: NavHostController) {
                                 )
                             }
                         }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                        IconButton(
+                            onClick = {
+                                navController.navigate(Screen.Tips.route)
+                            },
+                            modifier = Modifier.width(60.dp)
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.lampu),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.tips),
-                                fontSize = 9.sp,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.lampu),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.tips),
+                                    fontSize = 9.sp,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                         IconButton(
                             onClick = {
@@ -227,7 +232,6 @@ fun MainScreen(navController: NavHostController) {
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
-
                             }
                         }
                     }

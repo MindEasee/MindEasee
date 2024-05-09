@@ -94,7 +94,7 @@ fun LoginScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            maxLines = 3,
+                            maxLines = 1,
                             label = { Text("Email") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Email,
@@ -110,7 +110,7 @@ fun LoginScreen(navController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            maxLines = 3,
+                            maxLines = 1,
                             label = { Text("Password") },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -160,19 +160,53 @@ fun LoginScreen(navController: NavHostController) {
                         ) {
                             Text("Masuk")
                         }
-                        Text(
-                            text = "Belum memiliki akun? Daftar disini",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.clickable {
-                                navController.navigate(Screen.Register.route)
-                            }.semantics { contentDescription = "Daftar disini" }
-                        )
+                        Row(
+                            modifier = Modifier
+                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
+                                .fillMaxWidth(),  // Mengisi lebar maksimal
+                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
+                        ) {
+                            Text(
+                                text = "Belum memiliki akun? ",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "Daftar disini",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.clickable { navController.navigate(Screen.Register.route) }
+                                    .semantics { contentDescription = "Daftar disini" }
+                            )
+                        }
                     }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = "Hi!",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 50.sp
+                        ),
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .align(Alignment.Top)
+                            .offset(20.dp)
+
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.man), // Replace with the correct image source
+                        contentDescription = "Deskripsi gambar",
+                        modifier = Modifier
+                            .size(300.dp)
+                    )
                 }
             }
         }
     )
 }
+
 private fun isValidCredentials(email: String, password: String): Boolean {
     return email.isNotEmpty() && password.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
