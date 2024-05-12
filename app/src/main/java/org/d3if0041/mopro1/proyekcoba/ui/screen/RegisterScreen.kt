@@ -1,7 +1,6 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,9 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -23,8 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -42,25 +37,21 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import org.d3if0041.mopro1.proyekcoba.R
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
@@ -70,8 +61,6 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }  // State untuk visibilitas password
-
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -80,7 +69,9 @@ fun RegisterScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Spacer(modifier = Modifier.width(83.dp))
                     }
                 }
@@ -94,14 +85,11 @@ fun RegisterScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(
-                    text = stringResource(R.string.daftar),
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    fontSize = 36.sp,
-                    modifier = Modifier.fillMaxWidth()
+                    text = "Daftar",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -110,108 +98,131 @@ fun RegisterScreen(navController: NavHostController) {
                     modifier = Modifier
                         .width(300.dp)
                         .height(280.dp)
-                        .border(width = 0.5.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp))
+                        .border(
+                            width = 0.5.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                         .padding(8.dp)
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                            maxLines = 1,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                             label = { Text("Email") },
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(onNext = { passwordFocusRequest.requestFocus() })
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Email,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { passwordFocusRequest.requestFocus() }
+                            )
                         )
 
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                            maxLines = 1,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                             label = { Text("Password") },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                if (isValidCredentials(email, password)) {
-                                    navController.navigate(Screen.Home.route)
-                                } else {
-                                    Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                            visualTransformation = PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    if (isValidCredentials(email, password)) {
+                                        navController.navigate(Screen.Home.route)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Invalid email or password",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    keyboardController?.hide()
                                 }
-                                keyboardController?.hide()
-                            }),
-                            trailingIcon = {
-                                val iconId = if (passwordVisible) R.drawable.eye else R.drawable.eye_hide
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(painter = painterResource(id = iconId), contentDescription = if (passwordVisible) "Hide password" else "Show password")
-                                }
-                            }
+                            )
                         )
-
                         Button(
                             onClick = {
-                                if (isValidCredentials(email, password)) {
-                                    navController.navigate(Screen.Home.route)
-                                } else {
-                                    Toast.makeText(context, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    if (isValidCredentials(email, password)) {
+                                        val success = createUserWithEmailAndPassword(email, password)
+                                        if (success) {
+                                            navController.navigate(Screen.Home.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Gagal mendaftar",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Email atau password tidak valid",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary, contentColor = Color.White)
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = Color.White
+                            )
                         ) {
                             Text("Daftar")
                         }
 
-                        Row(
-                            modifier = Modifier
-                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
-                                .fillMaxWidth(),  // Mengisi lebar maksimal
-                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
-                        ) {
-                            Text(
-                                text = "Sudah memiliki akun? ",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "Masuk disini",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.clickable { navController.navigate(Screen.Login.route) }
-                                    .semantics { contentDescription = "Masuk disini" }
-                            )
-                        }
+                        Text(
+                            text = "Sudah memiliki akun? Masuk disini",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.clickable {
+                                navController.navigate(Screen.Login.route)
+                            }.semantics { contentDescription = "Masuk disini" }
+                        )
                     }
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text(
-                        text = "Hi!",
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 50.sp
-                        ),
-                        modifier = Modifier
-                            .padding(end = 10.dp)
-                            .align(Alignment.Top)
-                            .offset(20.dp)
-
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.man), // Replace with the correct image source
-                        contentDescription = "Deskripsi gambar",
-                        modifier = Modifier
-                            .size(300.dp)
-                    )
                 }
             }
         }
     )
+}
+
+private suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        try {
+            val authResult = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+            authResult.user != null
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
+
+private suspend fun createUserWithEmailAndPassword(email: String, password: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        try {
+            val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
+            authResult.user != null
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
 
 private fun isValidCredentials(email: String, password: String): Boolean {
@@ -225,4 +236,3 @@ fun RegisterScreenPreview() {
         RegisterScreen(rememberNavController())
     }
 }
-

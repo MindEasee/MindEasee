@@ -6,28 +6,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import org.d3if0041.mopro1.proyekcoba.R
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
@@ -36,8 +36,6 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) } // Menyimpan state visibilitas password
-
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -46,7 +44,9 @@ fun LoginScreen(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Spacer(modifier = Modifier.width(83.dp))
                     }
                 }
@@ -60,16 +60,15 @@ fun LoginScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(
-                    text = stringResource(R.string.masuk),
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    fontSize = 36.sp,
-                    modifier = Modifier.fillMaxWidth()
+                    text = "Masuk",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Box(
                     modifier = Modifier
                         .width(300.dp)
@@ -88,13 +87,14 @@ fun LoginScreen(navController: NavHostController) {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         OutlinedTextField(
                             value = email,
                             onValueChange = { email = it },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            maxLines = 1,
                             label = { Text("Email") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Email,
@@ -104,15 +104,15 @@ fun LoginScreen(navController: NavHostController) {
                                 onNext = { passwordFocusRequest.requestFocus() }
                             )
                         )
+
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            maxLines = 1,
                             label = { Text("Password") },
-                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            visualTransformation = PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Password,
                                 imeAction = ImeAction.Done
@@ -130,29 +130,33 @@ fun LoginScreen(navController: NavHostController) {
                                     }
                                     keyboardController?.hide()
                                 }
-                            ),
-                            trailingIcon = {
-                                val icon = if (passwordVisible) R.drawable.eye else R.drawable.eye_hide
-                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                    Icon(painter = painterResource(id = icon), contentDescription = "Toggle password visibility")
-                                }
-                            }
+                            )
                         )
+
                         Button(
                             onClick = {
-                                if (isValidCredentials(email, password)) {
-                                    navController.navigate(Screen.Home.route)
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Invalid email or password",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    if (isValidCredentials(email, password)) {
+                                        val success = signInWithEmailAndPassword(email, password)
+                                        if (success) {
+                                            navController.navigate(Screen.Home.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Gagal masuk",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Email atau password tidak valid",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary,
                                 contentColor = Color.White
@@ -160,51 +164,41 @@ fun LoginScreen(navController: NavHostController) {
                         ) {
                             Text("Masuk")
                         }
-                        Row(
-                            modifier = Modifier
-                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
-                                .fillMaxWidth(),  // Mengisi lebar maksimal
-                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
-                        ) {
-                            Text(
-                                text = "Belum memiliki akun? ",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "Daftar disini",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.clickable { navController.navigate(Screen.Register.route) }
-                                    .semantics { contentDescription = "Daftar disini" }
-                            )
-                        }
-                    }
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text(
-                        text = "Hi!",
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 50.sp
-                        ),
-                        modifier = Modifier
-                            .padding(end = 10.dp)
-                            .align(Alignment.Top)
-                            .offset(20.dp)
 
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.man), // Replace with the correct image source
-                        contentDescription = "Deskripsi gambar",
-                        modifier = Modifier
-                            .size(300.dp)
-                    )
+                        Text(
+                            text = "Belum memiliki akun? Daftar disini",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.clickable {
+                                navController.navigate(Screen.Register.route)
+                            }.semantics { contentDescription = "Daftar disini" }
+                        )
+                    }
                 }
             }
         }
     )
+}
+
+private suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        try {
+            val authResult = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+            authResult.user != null
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
+
+private suspend fun createUserWithEmailAndPassword(email: String, password: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        try {
+            val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
+            authResult.user != null
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
 
 private fun isValidCredentials(email: String, password: String): Boolean {
