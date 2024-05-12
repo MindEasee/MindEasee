@@ -1,5 +1,6 @@
 package org.d3if0041.mopro1.proyekcoba.halaman
 
+import LoginScreen
 import OpenScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -15,7 +16,6 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.EntriScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.InfoScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.JoggingScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.LainScreen
-import org.d3if0041.mopro1.proyekcoba.ui.screen.LoginScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.MainScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.PasswordScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.RegisterScreen
