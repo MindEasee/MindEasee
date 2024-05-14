@@ -1,5 +1,6 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
+import LainAlertDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +15,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +39,10 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LainScreen(navController: NavHostController) {
+
+    val id: String? = "example_id"
+
+    val showDialogState = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -196,7 +203,7 @@ fun LainScreen(navController: NavHostController) {
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                         .padding(16.dp)
                         .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp))
-                        .clickable { navController.navigate("loginScreen") { popUpTo(0) } } // Menggunakan navigate dan popUpTo untuk menghapus stack
+                        .clickable { showDialogState.value = true } // Menggunakan navigate dan popUpTo untuk menghapus stack
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -227,10 +234,25 @@ fun LainScreen(navController: NavHostController) {
                             modifier = Modifier.size(30.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
+
+                        if (id != null) {
+                            LainAlertDialog(
+                                openDialog = showDialogState.value,
+                                onDismissRequest = { showDialogState.value = false },
+                                onConfirmation = {
+                                    showDialogState.value = false
+                                    // Lakukan navigasi ke halaman login
+                                    navController.navigate("loginScreen") {
+                                        popUpTo(0)
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
         },
+
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),

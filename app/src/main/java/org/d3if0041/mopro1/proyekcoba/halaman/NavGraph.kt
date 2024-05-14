@@ -26,7 +26,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.TipsScreen
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Awal.route // Mulai dari halaman awal
+        startDestination = Screen.Home.route // Mulai dari halaman awal
     ) {
         composable(route = Screen.Awal.route) {
             AwalScreen(navController)

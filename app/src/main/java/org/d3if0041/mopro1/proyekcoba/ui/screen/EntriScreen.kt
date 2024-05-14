@@ -11,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,9 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +38,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EntriScreen(navController: NavHostController) {
@@ -44,6 +47,10 @@ fun EntriScreen(navController: NavHostController) {
     val context = LocalContext.current
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime by remember { mutableStateOf(LocalTime.now()) }
+
+    var masalahSaatIni by remember { mutableStateOf("") } // Deklarasi variabel
+    var pikiran by remember { mutableStateOf("") } // Deklarasi variabel
+    var solusi by remember { mutableStateOf("") } // Deklarasi variabel
 
     Scaffold { padding ->
         LazyColumn(
@@ -173,89 +180,93 @@ fun EntriScreen(navController: NavHostController) {
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                                 .background(Color.White, RoundedCornerShape(8.dp))
                         ) {
-                            Text(
-                                "Deskripsikan masalah dan situasi saat ini.",
+                            Column(
                                 modifier = Modifier
-                                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontSize = 12.sp,
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp)
-                                    .padding(
-                                        top = 32.dp,
-                                        start = 16.dp,
-                                        end = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                                    .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                                    .background(Color.White, RoundedCornerShape(8.dp))
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalArrangement = Arrangement.Top
                             ) {
-                                // Your content
+                                Text(
+                                    "Deskripsikan masalah dan situasi saat ini.",
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontSize = 12.sp,
+                                )
+
+                                // TextField untuk memasukkan teks
+                                OutlinedTextField(
+                                    value = masalahSaatIni ?: "", // Gunakan nilai yang diinginkan
+                                    onValueChange = { masalahSaatIni = it },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .width(50.dp)
+                                        .height(130.dp),
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        focusedBorderColor = Color.LightGray,
+                                    )
+                                )
                             }
                         }
+
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(290.dp)
+                                .height(330.dp) // Mengubah ketinggian Box karena akan memuat dua komponen (teks dan OutlinedTextField)
                                 .padding(16.dp)
                                 .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                                 .background(Color.White, RoundedCornerShape(8.dp))
                         ) {
-                            Column {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalArrangement = Arrangement.Top
+                            ) {
                                 Text(
                                     "Apa yang sedang kamu pikirkan?",
-                                    modifier = Modifier
-                                        .padding(start = 17.dp, top = 16.dp, end = 16.dp),
+                                    modifier = Modifier.padding(bottom = 16.dp),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontSize = 12.sp,
                                 )
-                                Box(
+
+                                // CustomTextArea untuk "Apa yang sedang kamu pikirkan?"
+                                OutlinedTextField(
+                                    value = pikiran ?: "", // Gunakan nilai yang diinginkan
+                                    onValueChange = { pikiran = it },
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(100.dp)
-                                        .padding(
-                                            top = 5.dp,
-                                            start = 16.dp,
-                                            end = 16.dp,
-                                            bottom = 16.dp
-                                        )
-                                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                                        .background(Color.White, RoundedCornerShape(8.dp))
-                                        .padding(16.dp),
+                                        .width(50.dp)
+                                        .height(100.dp),
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        focusedBorderColor = Color.LightGray,
+                                    )
                                 )
+
+                                Spacer(modifier = Modifier.height(16.dp)) // Spasi antara teks dan OutlinedTextField
 
                                 Text(
                                     "Bagaimana solusinya?",
-                                    modifier = Modifier
-                                        .padding(start = 17.dp, top = 0.dp, end = 5.dp),
+                                    modifier = Modifier.padding(bottom = 16.dp),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontSize = 12.sp,
                                 )
-                                Box(
+
+                                // CustomTextArea untuk "Bagaimana solusinya?"
+                                OutlinedTextField(
+                                    value = solusi ?: "", // Gunakan nilai yang diinginkan
+                                    onValueChange = { solusi = it },
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(100.dp)
-                                        .padding(
-                                            top = 5.dp,
-                                            start = 16.dp,
-                                            end = 16.dp,
-                                            bottom = 16.dp
-                                        )
-                                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                                        .background(Color.White, RoundedCornerShape(8.dp))
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    // Your content
-                                }
+                                        .width(50.dp)
+                                        .height(100.dp),
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        focusedBorderColor = Color.LightGray,
+                                    )
+                                )
                             }
                         }
+
+
+
 
                         if (showDatePicker) {
                             val calendar = Calendar.getInstance()
@@ -287,23 +298,61 @@ fun EntriScreen(navController: NavHostController) {
                     }
                 }
             }
-
             item {
-                Button(
-                    onClick = { /* Handle button click */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                    shape = RoundedCornerShape(12.dp),
+                Box(
                     modifier = Modifier
-                        .width(300.dp)
-                        .padding(16.dp)
-                        .height(50.dp)
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Tambah")
+                    Button(
+                        onClick = { /* Handle button click */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(40.dp)
+                    ) {
+                        Text(
+                            text = "Tambah",
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                    }
                 }
+
             }
         }
     }
 }
+
+@Composable
+fun CustomTextArea(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    focusedBorderColor: Color = Color.LightGray
+) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        textStyle = LocalTextStyle.current.copy(color = Color.Black),
+        cursorBrush = SolidColor(Color.Black),
+        decorationBox = { innerTextField ->
+            Box(
+                modifier = Modifier
+                    .then(Modifier.border(1.dp, focusedBorderColor, RoundedCornerShape(4.dp)))
+                    .padding(4.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                innerTextField()
+            }
+        }
+    )
+}
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

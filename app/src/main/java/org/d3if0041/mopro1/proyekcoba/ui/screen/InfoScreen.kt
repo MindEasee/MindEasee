@@ -45,7 +45,7 @@ fun InfoScreen(navController: NavHostController) {
                         Image(
                             painter = painterResource(R.drawable.back),
                             contentDescription = "Back",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                             modifier = Modifier.size(40.dp)
                         )
                     }

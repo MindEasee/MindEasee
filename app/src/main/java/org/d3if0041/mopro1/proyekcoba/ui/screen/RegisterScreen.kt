@@ -103,7 +103,9 @@ fun RegisterScreen(navController: NavHostController) {
                 Text(
                     text = "Daftar",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 36.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -209,6 +211,9 @@ fun RegisterScreen(navController: NavHostController) {
                                 .fillMaxWidth(),  // Mengisi lebar maksimal
                             verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
                         ) {
+                            Spacer(modifier = Modifier.width(14.dp))
+
+
                             Text(
                                 text = "Sudah memiliki akun? ",
                                 style = MaterialTheme.typography.bodyMedium

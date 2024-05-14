@@ -81,12 +81,12 @@ fun MainScreen(navController: NavHostController) {
                             // Handle search icon click
                         }
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search",
-                            tint = Color.LightGray,
-                            modifier = Modifier.size(28.dp)
-                        )
+//                        Icon(
+//                            imageVector = Icons.Outlined.Search,
+//                            contentDescription = "Search",
+//                            tint = Color.LightGray,
+//                            modifier = Modifier.size(28.dp)
+//                        )
                     }
                 }
             )
