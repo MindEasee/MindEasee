@@ -36,6 +36,7 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.model.Note
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
+import org.d3if0041.mopro1.proyekcoba.view.NoteViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

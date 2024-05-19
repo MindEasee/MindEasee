@@ -1,4 +1,4 @@
-package org.d3if0041.mopro1.proyekcoba.ui.screen
+package org.d3if0041.mopro1.proyekcoba.view
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

@@ -21,7 +21,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.JalanScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Jogging.JoggingScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.LainScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.MuscleScreen
-import org.d3if0041.mopro1.proyekcoba.ui.screen.NoteViewModel
+import org.d3if0041.mopro1.proyekcoba.view.NoteViewModel
 import org.d3if0041.mopro1.proyekcoba.ui.screen.PasswordScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.RegisterScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Butterfly.ButterflyScreen
