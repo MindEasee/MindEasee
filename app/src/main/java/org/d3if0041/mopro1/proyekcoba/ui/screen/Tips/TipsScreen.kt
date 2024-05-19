@@ -1,4 +1,4 @@
-package org.d3if0041.mopro1.proyekcoba.ui.screen
+package org.d3if0041.mopro1.proyekcoba.ui.screen.Tips
 
 
 import androidx.compose.foundation.Image
@@ -76,7 +76,11 @@ fun TipsScreen(navController: NavHostController) {
                                 .clickable {
                                     when (tip) {
                                         "Jogging" ->  navController.navigate(Screen.Jogging.route)
-                                        // Tambahkan case lain jika diperlukan untuk navigasi ke layar lainnya
+                                        "Butterfly Hug" ->  navController.navigate(Screen.Butterfly.route)
+                                        "Deep Breath Relaxation" ->  navController.navigate(Screen.Deep.route)
+                                        "Jalan Kaki" ->  navController.navigate(Screen.Jalan.route)
+                                        "Guided Imagery" ->  navController.navigate(Screen.Imagery.route)
+
                                     }
                                 }
                                 .fillMaxWidth()

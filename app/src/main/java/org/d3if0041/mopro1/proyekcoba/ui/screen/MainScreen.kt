@@ -1,6 +1,6 @@
-package org.d3if0041.mopro1.proyekcoba.ui.screen
-
-
+import android.os.Build
+import androidx.annotation.RequiresApi
+import org.d3if0041.mopro1.proyekcoba.ui.screen.EntriScreen
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,16 +25,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
+import org.d3if0041.mopro1.proyekcoba.model.Note
+import org.d3if0041.mopro1.proyekcoba.ui.screen.NoteViewModel
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -81,12 +85,6 @@ fun MainScreen(navController: NavHostController) {
                             // Handle search icon click
                         }
                     ) {
-//                        Icon(
-//                            imageVector = Icons.Outlined.Search,
-//                            contentDescription = "Search",
-//                            tint = Color.LightGray,
-//                            modifier = Modifier.size(28.dp)
-//                        )
                     }
                 }
             )
@@ -101,7 +99,11 @@ fun MainScreen(navController: NavHostController) {
                 Box(
                     modifier = Modifier
                         .wrapContentSize()
-                        .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp)) // Add border
+                        .border(
+                            width = 1.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(16.dp)
+                        ) // Add border
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
                         .padding(16.dp)
                 ) {
@@ -260,6 +262,24 @@ fun MainScreen(navController: NavHostController) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun NoteItem(note: Note) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .padding(16.dp)
+    ) {
+        Text("Tanggal: ${note.date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))}")
+        Text("Jam: ${note.time.format(DateTimeFormatter.ofPattern("HH:mm"))}")
+        Text("Masalah: ${note.masalah}")
+        Text("Pikiran: ${note.pikiran}")
+        Text("Solusi: ${note.solusi}")
+    }
+}
+
 @Composable
 fun EmoticonRow(navController: NavController) {
     val emoticonResIds = listOf(
@@ -328,11 +348,15 @@ fun GambarBawah() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun GreetingPreview() {
+    val navController = rememberNavController()
+    val noteViewModel: NoteViewModel = viewModel()
+
     ProyekCobaTheme {
-        MainScreen(rememberNavController())
+        EntriScreen(navController = navController, noteViewModel = noteViewModel)
     }
 }

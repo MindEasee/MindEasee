@@ -15,6 +15,11 @@ sealed class Screen (val route:String) {
     data object Add: Screen("addScreen")
     data object Tips: Screen("tipsScreen")
     data object Jogging: Screen("joggingScreen")
-
+    data object Butterfly: Screen("butterflyScreen")
+    data object Deep: Screen("deepScreen")
+    data object Imagery: Screen("imageryScreen")
+    data object Jalan: Screen("jalanScreen")
+    data object Yoga: Screen("yogaScreen")
+    data object Muscle: Screen("muscleScreen")
 
 }

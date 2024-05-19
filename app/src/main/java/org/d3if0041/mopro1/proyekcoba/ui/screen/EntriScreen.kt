@@ -29,9 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3if0041.mopro1.proyekcoba.R
+import org.d3if0041.mopro1.proyekcoba.halaman.Screen
+import org.d3if0041.mopro1.proyekcoba.model.Note
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 import java.time.LocalDate
 import java.time.LocalTime
@@ -41,16 +44,15 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EntriScreen(navController: NavHostController) {
+fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime by remember { mutableStateOf(LocalTime.now()) }
-
-    var masalahSaatIni by remember { mutableStateOf("") } // Deklarasi variabel
-    var pikiran by remember { mutableStateOf("") } // Deklarasi variabel
-    var solusi by remember { mutableStateOf("") } // Deklarasi variabel
+    var masalahSaatIni by remember { mutableStateOf("") }
+    var pikiran by remember { mutableStateOf("") }
+    var solusi by remember { mutableStateOf("") }
 
     Scaffold { padding ->
         LazyColumn(
@@ -306,7 +308,17 @@ fun EntriScreen(navController: NavHostController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        onClick = { /* Handle button click */ },
+                        onClick = {
+                            val note = Note(
+                                date = selectedDate,
+                                time = selectedTime,
+                                masalah = masalahSaatIni,
+                                pikiran = pikiran,
+                                solusi = solusi
+                            )
+                            noteViewModel.addNote(note)
+                            navController.navigate(Screen.Home.route)
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
@@ -321,7 +333,6 @@ fun EntriScreen(navController: NavHostController) {
                         )
                     }
                 }
-
             }
         }
     }
@@ -358,7 +369,10 @@ fun CustomTextArea(
 @Preview(showBackground = true)
 @Composable
 fun EntriScreenPreview() {
+    val navController = rememberNavController()
+    val noteViewModel: NoteViewModel = viewModel()
+
     ProyekCobaTheme {
-        EntriScreen(rememberNavController())
+        EntriScreen(navController = navController, noteViewModel = noteViewModel)
     }
 }

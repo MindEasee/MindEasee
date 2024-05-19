@@ -1,4 +1,4 @@
-package org.d3if0041.mopro1.proyekcoba.ui.screen
+package org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Jogging
 
 import androidx.compose.runtime.Composable
 import android.net.Uri
@@ -23,5 +23,6 @@ fun VideoJogging(
                     start()
                 }
             }
-        })
+        }
+    )
 }

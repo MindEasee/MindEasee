@@ -1,4 +1,4 @@
-package org.d3if0041.mopro1.proyekcoba.ui.screen
+package org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Jogging
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,6 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxWidth
-
 
 
 @Composable
