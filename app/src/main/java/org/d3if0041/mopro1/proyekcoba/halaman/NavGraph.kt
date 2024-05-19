@@ -22,11 +22,15 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Jogging.JoggingScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.LainScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.MuscleScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.NoteViewModel
+import org.d3if0041.mopro1.proyekcoba.ui.screen.MainScreen
+import org.d3if0041.mopro1.proyekcoba.ui.screen.MuscleScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.PasswordScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.RegisterScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.Butterfly.ButterflyScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.DeepBreathRelaxation.DeepScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.Tips.TipsScreen
+import org.d3if0041.mopro1.proyekcoba.ui.screen.YogaScreen
+import org.d3if0041.mopro1.proyekcoba.ui.screen.TipsScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.YogaScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,6 +81,12 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screen.Jogging.route) {
             JoggingScreen(navController)
         }
+        composable(route = Screen.Yoga.route) {
+            YogaScreen(navController)
+        }
+        composable(route = Screen.Muscle.route) {
+            MuscleScreen(navController)
+        }
         composable(route = Screen.Butterfly.route) {
             ButterflyScreen(navController)
         }
@@ -97,4 +107,5 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
     }
 }
+
 

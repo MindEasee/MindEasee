@@ -21,5 +21,8 @@ sealed class Screen (val route:String) {
     data object Jalan: Screen("jalanScreen")
     data object Yoga: Screen("yogaScreen")
     data object Muscle: Screen("muscleScreen")
+    data object Yoga: Screen("yogaScreen")
+    data object Muscle: Screen("muscleScreen")
+
 
 }
