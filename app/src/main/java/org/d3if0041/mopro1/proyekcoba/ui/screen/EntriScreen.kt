@@ -278,10 +278,6 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 )
                             }
                         }
-
-
-
-
                         if (showDatePicker) {
                             val calendar = Calendar.getInstance()
                             val year = calendar.get(Calendar.YEAR)
