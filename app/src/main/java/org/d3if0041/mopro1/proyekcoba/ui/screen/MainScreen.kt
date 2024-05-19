@@ -52,8 +52,7 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                             painter = painterResource(R.drawable.back),
                             contentDescription = "Back",
                             colorFilter = ColorFilter.tint(Color.Gray),
-                            modifier = Modifier
-                                .size(28.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         Text(
@@ -71,8 +70,7 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                             painter = painterResource(R.drawable.next),
                             contentDescription = "Next",
                             colorFilter = ColorFilter.tint(Color.Gray),
-                            modifier = Modifier
-                                .size(28.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 },
@@ -90,13 +88,16 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
             Column(
                 modifier = Modifier
                     .padding(padding)
-                    .fillMaxSize(), // Changed from fillMaxWidth to fillMaxSize to center the content
-                horizontalAlignment = Alignment.CenterHorizontally // Ensures the content is centered horizontally
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                noteViewModel.notes.forEach { note ->
-                    NoteItem(note)
+                if (noteViewModel.notes.isEmpty()) {
+                    GambarBawah()
+                } else {
+                    noteViewModel.notes.forEach { note ->
+                        NoteItem(note)
+                    }
                 }
-                GambarBawah()
             }
         },
         bottomBar = {
@@ -150,7 +151,7 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                                     text = stringResource(R.string.statistik),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    overflow = TextOverflow.Visible,
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
@@ -198,19 +199,17 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                                     colorFilter = ColorFilter.tint(Color.Gray),
                                     modifier = Modifier.size(20.dp)
                                 )
-                                // Menggunakan string dari resource
                                 Text(
                                     text = stringResource(R.string.lain),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    overflow = TextOverflow.Visible,
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
                             }
                         }
                     }
-
                 }
             )
         },
@@ -237,26 +236,34 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
 
 
 
+
 @Composable
 fun GambarBawah() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+            .fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.imgnotes),
-            contentDescription = null,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .padding(vertical = 8.dp)
-        )
+                .padding(16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.imgnotes),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .padding(vertical = 8.dp)
+            )
+        }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
