@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -96,9 +97,15 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                     GambarBawah()
                 } else {
                     noteViewModel.notes.forEachIndexed { index, note ->
-                        NoteItem(note) {
-                            navController.navigate("${Screen.Entri.route}/$index")
-                        }
+                        NoteItem(
+                            note = note,
+                            onEditClick = {
+                                navController.navigate("${Screen.Entri.route}/$index")
+                            },
+                            onDeleteClick = {
+                                noteViewModel.deleteNoteById(index)
+                            }
+                        )
                     }
                 }
             }
@@ -270,12 +277,12 @@ fun GambarBawah() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NoteItem(note: Note, onClick: () -> Unit) {
+fun NoteItem(note: Note, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onEditClick)
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
@@ -284,8 +291,22 @@ fun NoteItem(note: Note, onClick: () -> Unit) {
         Text("Masalah: ${note.masalah}")
         Text("Pikiran: ${note.pikiran}")
         Text("Solusi: ${note.solusi}")
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = Color.Red
+                )
+            }
+        }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

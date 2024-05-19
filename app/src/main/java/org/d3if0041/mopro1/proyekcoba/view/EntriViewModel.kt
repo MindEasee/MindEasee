@@ -21,4 +21,8 @@ class NoteViewModel : ViewModel() {
     fun updateNote(id: Int, updatedNote: Note) {
         _notes[id] = updatedNote
     }
+
+    fun deleteNoteById(id: Int) {
+        _notes.removeAt(id)
+    }
 }
