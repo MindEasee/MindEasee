@@ -42,10 +42,10 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
+fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, noteId: Int? = null) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -54,6 +54,17 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel) 
     var masalahSaatIni by remember { mutableStateOf("") }
     var pikiran by remember { mutableStateOf("") }
     var solusi by remember { mutableStateOf("") }
+
+    noteId?.let {
+        val note = noteViewModel.getNoteById(it)
+        note?.let {
+            selectedDate = it.date
+            selectedTime = it.time
+            masalahSaatIni = it.masalah
+            pikiran = it.pikiran
+            solusi = it.solusi
+        }
+    }
 
     Scaffold { padding ->
         LazyColumn(
@@ -317,7 +328,11 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel) 
                                 pikiran = pikiran,
                                 solusi = solusi
                             )
-                            noteViewModel.addNote(note)
+                            if (noteId == null) {
+                                noteViewModel.addNote(note)
+                            } else {
+                                noteViewModel.updateNote(noteId, note)
+                            }
                             navController.navigate(Screen.Home.route)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
@@ -327,7 +342,7 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel) 
                             .height(40.dp)
                     ) {
                         Text(
-                            text = "Tambah",
+                            text = if (noteId == null) "Tambah" else "Update",
                             color = Color.Black,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp

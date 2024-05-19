@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -94,8 +95,10 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                 if (noteViewModel.notes.isEmpty()) {
                     GambarBawah()
                 } else {
-                    noteViewModel.notes.forEach { note ->
-                        NoteItem(note)
+                    noteViewModel.notes.forEachIndexed { index, note ->
+                        NoteItem(note) {
+                            navController.navigate("${Screen.Entri.route}/$index")
+                        }
                     }
                 }
             }
@@ -267,11 +270,12 @@ fun GambarBawah() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NoteItem(note: Note) {
+fun NoteItem(note: Note, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable(onClick = onClick)
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {

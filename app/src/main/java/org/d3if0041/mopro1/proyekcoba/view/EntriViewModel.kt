@@ -13,4 +13,12 @@ class NoteViewModel : ViewModel() {
     fun addNote(note: Note) {
         _notes.add(note)
     }
+
+    fun getNoteById(id: Int): Note? {
+        return _notes.getOrNull(id)
+    }
+
+    fun updateNote(id: Int, updatedNote: Note) {
+        _notes[id] = updatedNote
+    }
 }
