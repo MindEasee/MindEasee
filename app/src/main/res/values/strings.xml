@@ -32,6 +32,9 @@
     <string name="daftar">Register</string>
     <string name="teks_entri">Kabar Hari ini,\nBiasa</string>
     <string name="login">Login</string>
+    <string name="pesan_keluar">APA ANDA YAKIN\n INGIN KELUAR?</string>
+    <string name="tombol_keluar">Keluar</string>
+    <string name="tombol_batal">Batal</string>
 
 
 </resources>
