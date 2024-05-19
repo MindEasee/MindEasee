@@ -76,6 +76,8 @@ fun TipsScreen(navController: NavHostController) {
                                 .clickable {
                                     when (tip) {
                                         "Jogging" ->  navController.navigate(Screen.Jogging.route)
+                                        "Yoga" ->  navController.navigate(Screen.Yoga.route)
+                                        "Progressive Muscle Relaxation" ->  navController.navigate(Screen.Muscle.route)
                                         // Tambahkan case lain jika diperlukan untuk navigasi ke layar lainnya
                                     }
                                 }

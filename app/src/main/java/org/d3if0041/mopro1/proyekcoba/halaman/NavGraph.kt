@@ -17,9 +17,11 @@ import org.d3if0041.mopro1.proyekcoba.ui.screen.JoggingScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.LainScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.LoginScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.MainScreen
+import org.d3if0041.mopro1.proyekcoba.ui.screen.MuscleScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.PasswordScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.RegisterScreen
 import org.d3if0041.mopro1.proyekcoba.ui.screen.TipsScreen
+import org.d3if0041.mopro1.proyekcoba.ui.screen.YogaScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -66,6 +68,12 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Jogging.route) {
             JoggingScreen(navController)
+        }
+        composable(route = Screen.Yoga.route) {
+            YogaScreen(navController)
+        }
+        composable(route = Screen.Muscle.route) {
+            MuscleScreen(navController)
         }
     }
 }
