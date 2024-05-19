@@ -52,7 +52,7 @@ fun MuscleScreen(navController: NavHostController) {
                         )
                     }
                     Text(
-                        text = "Progressive Muscle Relaxation",
+                        text = "Progressive Muscle Relaxation Tips",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )

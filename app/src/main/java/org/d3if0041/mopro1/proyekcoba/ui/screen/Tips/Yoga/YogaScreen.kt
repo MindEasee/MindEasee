@@ -52,7 +52,7 @@ fun YogaScreen(navController: NavHostController) {
                         )
                     }
                     Text(
-                        text = "Yoga",
+                        text = "Yoga Tips",
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
