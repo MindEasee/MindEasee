@@ -80,10 +80,8 @@ fun TipsScreen(navController: NavHostController) {
                                         "Deep Breath Relaxation" ->  navController.navigate(Screen.Deep.route)
                                         "Jalan Kaki" ->  navController.navigate(Screen.Jalan.route)
                                         "Guided Imagery" ->  navController.navigate(Screen.Imagery.route)
-
                                         "Yoga" ->  navController.navigate(Screen.Yoga.route)
                                         "Progressive Muscle Relaxation" ->  navController.navigate(Screen.Muscle.route)
-                                        // Tambahkan case lain jika diperlukan untuk navigasi ke layar lainnya
                                     }
                                 }
                                 .fillMaxWidth()

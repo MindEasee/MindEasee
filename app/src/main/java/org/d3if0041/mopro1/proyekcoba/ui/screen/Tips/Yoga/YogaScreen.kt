@@ -200,6 +200,5 @@ fun YogaScreen(navController: NavHostController) {
                 )
             }
         }
-
     }
 }
