@@ -6,8 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.*
-
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -23,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +47,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var showPassword by remember { mutableStateOf(false) } // State for toggling password visibility
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -128,7 +128,7 @@ fun LoginScreen(navController: NavHostController) {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                             label = { Text("Password") },
-                            visualTransformation = PasswordVisualTransformation(),
+                            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Password,
                                 imeAction = ImeAction.Done
@@ -159,7 +159,16 @@ fun LoginScreen(navController: NavHostController) {
                                     }
                                     keyboardController?.hide()
                                 }
-                            )
+                            ),
+                            trailingIcon = {
+                                val image = if (showPassword) R.drawable.eye else R.drawable.eye_hide
+                                IconButton(onClick = { showPassword = !showPassword }) {
+                                    Icon(
+                                        painter = painterResource(id = image),
+                                        contentDescription = "Toggle Password Visibility"
+                                    )
+                                }
+                            }
                         )
 
                         Button(
@@ -197,7 +206,6 @@ fun LoginScreen(navController: NavHostController) {
                         ) {
                             Text("Masuk")
                         }
-
                         Row(
                             modifier = Modifier
                                 .padding(all = 16.dp)

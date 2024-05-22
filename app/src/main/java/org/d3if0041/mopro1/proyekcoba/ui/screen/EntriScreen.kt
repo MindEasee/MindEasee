@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +12,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,10 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +38,6 @@ import org.d3if0041.mopro1.proyekcoba.view.NoteViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,7 +151,9 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 Button(
                                     onClick = { showDatePicker = true },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                                    modifier = Modifier.width(140.dp).height(35.dp),
+                                    modifier = Modifier
+                                        .width(140.dp)
+                                        .height(35.dp),
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(text = "Tanggal", color = Color.Black)
@@ -172,7 +171,9 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 Button(
                                     onClick = { showTimePicker = true },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                                    modifier = Modifier.width(140.dp).height(35.dp),
+                                    modifier = Modifier
+                                        .width(140.dp)
+                                        .height(35.dp),
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Text(text = "Jam", color = Color.Black)
@@ -209,7 +210,7 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
 
                                 // TextField untuk memasukkan teks
                                 OutlinedTextField(
-                                    value = masalahSaatIni ?: "", // Gunakan nilai yang diinginkan
+                                    value = masalahSaatIni, // Gunakan nilai yang diinginkan
                                     onValueChange = { masalahSaatIni = it },
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -244,7 +245,7 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
 
                                 // CustomTextArea untuk "Apa yang sedang kamu pikirkan?"
                                 OutlinedTextField(
-                                    value = pikiran ?: "", // Gunakan nilai yang diinginkan
+                                    value = pikiran, // Gunakan nilai yang diinginkan
                                     onValueChange = { pikiran = it },
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -255,18 +256,17 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                     )
                                 )
 
-                                Spacer(modifier = Modifier.height(16.dp)) // Spasi antara teks dan OutlinedTextField
-
+                                Spacer(modifier = Modifier.height(16.dp)) // Jarak antara dua komponen
                                 Text(
-                                    "Bagaimana solusinya?",
+                                    "Bagaimana rencana solusinya?",
                                     modifier = Modifier.padding(bottom = 16.dp),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontSize = 12.sp,
                                 )
 
-                                // CustomTextArea untuk "Bagaimana solusinya?"
+                                // CustomTextArea untuk "Bagaimana rencana solusinya?"
                                 OutlinedTextField(
-                                    value = solusi ?: "", // Gunakan nilai yang diinginkan
+                                    value = solusi, // Gunakan nilai yang diinginkan
                                     onValueChange = { solusi = it },
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -278,113 +278,98 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 )
                             }
                         }
-                        if (showDatePicker) {
-                            val calendar = Calendar.getInstance()
-                            val year = calendar.get(Calendar.YEAR)
-                            val month = calendar.get(Calendar.MONTH)
-                            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-                            DatePickerDialog(
-                                context,
-                                { _: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
-                                    selectedDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth)
-                                    showDatePicker = false
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Button(
+                                onClick = {
+                                    if (masalahSaatIni.isEmpty() || pikiran.isEmpty() || solusi.isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            "Tidak boleh kosong",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        // Proses simpan data ke ViewModel
+                                        val note = Note(
+                                            id = noteId ?: 0,
+                                            date = selectedDate,
+                                            time = selectedTime,
+                                            masalah = masalahSaatIni,
+                                            pikiran = pikiran,
+                                            solusi = solusi
+                                        )
+                                        if (noteId == null) {
+                                            noteViewModel.addNote(note)
+                                        } else {
+                                            noteViewModel.updateNote(note)
+                                        }
+                                        navController.navigate(Screen.Home.route)
+                                    }
                                 },
-                                year,
-                                month,
-                                day
-                            ).show()
-                        }
-
-                        if (showTimePicker) {
-                            val hour = selectedTime.hour
-                            val minute = selectedTime.minute
-
-                            TimePickerDialog(context, { _, hourOfDay, minute ->
-                                selectedTime = LocalTime.of(hourOfDay, minute)
-                                showTimePicker = false
-                            }, hour, minute, true).show()
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                                modifier = Modifier
+                                    .width(180.dp)
+                                    .padding(top = 16.dp)
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(24.dp)
+                            ) {
+                                Text("Simpan", fontSize = 16.sp,
+                                    color = Color.Black
+                                )
+                            }
                         }
                     }
                 }
-            }
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                        onClick = {
-                            val note = Note(
-                                date = selectedDate,
-                                time = selectedTime,
-                                masalah = masalahSaatIni,
-                                pikiran = pikiran,
-                                solusi = solusi
-                            )
-                            if (noteId == null) {
-                                noteViewModel.addNote(note)
-                            } else {
-                                noteViewModel.updateNote(noteId, note)
-                            }
-                            navController.navigate(Screen.Home.route)
+                if (showDatePicker) {
+                    val currentDate = LocalDate.now()
+                    val datePickerDialog = DatePickerDialog(
+                        context,
+                        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                            selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                            showDatePicker = false
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .width(250.dp)
-                            .height(40.dp)
-                    ) {
-                        Text(
-                            text = if (noteId == null) "Tambah" else "Update",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
+                        currentDate.year,
+                        currentDate.monthValue - 1,
+                        currentDate.dayOfMonth
+                    )
+                    datePickerDialog.setOnCancelListener {
+                        showDatePicker = false
                     }
+                    datePickerDialog.show()
+                }
+
+                if (showTimePicker) {
+                    val currentTime = LocalTime.now()
+                    val timePickerDialog = TimePickerDialog(
+                        context,
+                        { _, hour: Int, minute: Int ->
+                            selectedTime = LocalTime.of(hour, minute)
+                            showTimePicker = false
+                        },
+                        currentTime.hour,
+                        currentTime.minute,
+                        true
+                    )
+                    timePickerDialog.setOnCancelListener {
+                        showTimePicker = false
+                    }
+                    timePickerDialog.show()
                 }
             }
         }
     }
 }
 
-@Composable
-fun CustomTextArea(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    focusedBorderColor: Color = Color.LightGray
-) {
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        textStyle = LocalTextStyle.current.copy(color = Color.Black),
-        cursorBrush = SolidColor(Color.Black),
-        decorationBox = { innerTextField ->
-            Box(
-                modifier = Modifier
-                    .then(Modifier.border(1.dp, focusedBorderColor, RoundedCornerShape(4.dp)))
-                    .padding(4.dp),
-                contentAlignment = Alignment.TopStart
-            ) {
-                innerTextField()
-            }
-        }
-    )
-}
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun EntriScreenPreview() {
-    val navController = rememberNavController()
-    val noteViewModel: NoteViewModel = viewModel()
-
     ProyekCobaTheme {
-        EntriScreen(navController = navController, noteViewModel = noteViewModel)
+        val navController = rememberNavController()
+        val noteViewModel: NoteViewModel = viewModel()
+        EntriScreen(navController, noteViewModel)
     }
 }

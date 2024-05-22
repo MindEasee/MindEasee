@@ -8,5 +8,6 @@ data class Note(
     val time: LocalTime,
     val masalah: String,
     val pikiran: String,
-    val solusi: String
+    val solusi: String,
+    val id: Int
 )
