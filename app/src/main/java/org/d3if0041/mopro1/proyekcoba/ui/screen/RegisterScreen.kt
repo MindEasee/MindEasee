@@ -1,5 +1,6 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,8 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,12 +58,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
@@ -75,6 +71,7 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -113,7 +110,7 @@ fun RegisterScreen(navController: NavHostController) {
                 Box(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(280.dp)
+                        .height(330.dp) // Increased height to accommodate the new field
                         .border(
                             width = 0.5.dp,
                             color = Color.Gray,
@@ -129,6 +126,21 @@ fun RegisterScreen(navController: NavHostController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            label = { Text("Nama") },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { passwordFocusRequest.requestFocus() }
+                            )
+                        )
 
                         OutlinedTextField(
                             value = email,
@@ -176,8 +188,8 @@ fun RegisterScreen(navController: NavHostController) {
                         Button(
                             onClick = {
                                 CoroutineScope(Dispatchers.Main).launch {
-                                    if (isValidCredentials(email, password)) {
-                                        val success = createUserWithEmailAndPassword(email, password)
+                                    if (isValidCredentials(email, password) && name.isNotEmpty()) {
+                                        val success = createUserWithEmailAndPassword(email, password, name, context)
                                         if (success) {
                                             navController.navigate(Screen.Home.route)
                                         } else {
@@ -190,7 +202,7 @@ fun RegisterScreen(navController: NavHostController) {
                                     } else {
                                         Toast.makeText(
                                             context,
-                                            "Email atau password tidak valid",
+                                            "Nama, email atau password tidak valid",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -204,16 +216,12 @@ fun RegisterScreen(navController: NavHostController) {
                         ) {
                             Text("Daftar")
                         }
-
                         Row(
                             modifier = Modifier
-                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
-                                .fillMaxWidth(),  // Mengisi lebar maksimal
-                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Spacer(modifier = Modifier.width(14.dp))
-
-
                             Text(
                                 text = "Sudah memiliki akun? ",
                                 style = MaterialTheme.typography.bodyMedium
@@ -227,6 +235,8 @@ fun RegisterScreen(navController: NavHostController) {
                         }
                     }
                 }
+
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 16.dp)
@@ -255,22 +265,28 @@ fun RegisterScreen(navController: NavHostController) {
     )
 }
 
-private suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
-    return withContext(Dispatchers.IO) {
-        try {
-            val authResult = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
-            authResult.user != null
-        } catch (e: Exception) {
-            false
-        }
-    }
-}
-
-private suspend fun createUserWithEmailAndPassword(email: String, password: String): Boolean {
+private suspend fun createUserWithEmailAndPassword(
+    email: String,
+    password: String,
+    name: String,
+    context: Context
+): Boolean {
     return withContext(Dispatchers.IO) {
         try {
             val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-            authResult.user != null
+            authResult.user?.let { user ->
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(name)
+                    .build()
+                user.updateProfile(profileUpdates).await()
+
+                // Simpan nama pengguna ke SharedPreferences
+                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPreferences.edit().putString("name", name).apply()
+
+                return@withContext true
+            }
+            false
         } catch (e: Exception) {
             false
         }

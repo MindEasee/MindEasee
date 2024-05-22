@@ -38,14 +38,17 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun LainScreen(navController: NavHostController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    val email = sharedPreferences.getString("email", "Email")
+
+    // Ambil nama pengguna dari SharedPreferences
+    val name = sharedPreferences.getString("name", "Name") ?: "Name"
 
     val id: String? = "example_id"
+
     val showDialogState = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -105,7 +108,7 @@ fun LainScreen(navController: NavHostController) {
                             modifier = Modifier.padding(vertical = 12.dp)
                         ) {
                             Text(
-                                text = email ?: "Email",
+                                text = name,
                                 fontSize = 18.sp,
                                 color = Color.Black,
                                 modifier = Modifier.offset(y = 10.dp)
