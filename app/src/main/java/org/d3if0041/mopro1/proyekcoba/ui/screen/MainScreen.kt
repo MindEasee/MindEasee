@@ -6,9 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -86,6 +88,7 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                 }
             )
         },
+
         content = { padding ->
             Column(
                 modifier = Modifier
@@ -223,6 +226,7 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                 }
             )
         },
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -282,30 +286,87 @@ fun NoteItem(note: Note, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable(onClick = onEditClick)
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
-        Text("Tanggal: ${note.date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))}")
-        Text("Jam: ${note.time.format(DateTimeFormatter.ofPattern("HH:mm"))}")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = note.time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                ),
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = "-",
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                ),
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Text(
+                text = note.date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                ),
+                modifier = Modifier.weight(1f) // This makes the text take up the available space
+            )
+            Spacer(modifier = Modifier.width(8.dp)) // Space between text and icons
+
+            // Moved edit box here
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(Color.White, CircleShape)
+                    .border(1.dp, Color.Gray, CircleShape)
+                    .clickable {
+                        // Handle box click event
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        tint = Color(0xFF4ECB71)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp)) // Space between edit and delete icons
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(Color.White, CircleShape)
+                    .border(1.dp, Color.Gray, CircleShape)
+                    .clickable {
+                        // Handle box click event
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = Color.Red
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Text("Masalah: ${note.masalah}")
         Text("Pikiran: ${note.pikiran}")
         Text("Solusi: ${note.solusi}")
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = Color.Red
-                )
-            }
-        }
     }
 }
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
