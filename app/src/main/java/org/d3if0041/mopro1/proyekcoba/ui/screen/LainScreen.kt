@@ -1,6 +1,7 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
 import LainAlertDialog
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,9 +41,11 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LainScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val email = sharedPreferences.getString("email", "Email")
 
     val id: String? = "example_id"
-
     val showDialogState = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -101,10 +105,10 @@ fun LainScreen(navController: NavHostController) {
                             modifier = Modifier.padding(vertical = 12.dp)
                         ) {
                             Text(
-                                text = "Email",
+                                text = email ?: "Email",
                                 fontSize = 18.sp,
                                 color = Color.Black,
-                                modifier = Modifier.offset(y = 10.dp)  // Menggeser teks ke bawah sebesar 110 dp
+                                modifier = Modifier.offset(y = 10.dp)
                             )
                         }
                     }

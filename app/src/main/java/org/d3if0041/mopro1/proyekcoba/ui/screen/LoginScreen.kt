@@ -1,3 +1,4 @@
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -42,7 +43,7 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
@@ -50,6 +51,9 @@ fun LoginScreen(navController: NavHostController) {
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+
+    // Obtain a reference to SharedPreferences
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
     Scaffold(
         topBar = {
@@ -71,7 +75,6 @@ fun LoginScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
                     text = "Masuk",
                     style = MaterialTheme.typography.headlineMedium,
@@ -133,11 +136,24 @@ fun LoginScreen(navController: NavHostController) {
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     if (isValidCredentials(email, password)) {
-                                        navController.navigate(Screen.Home.route)
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            val success = signInWithEmailAndPassword(email, password)
+                                            if (success) {
+                                                // Save email to SharedPreferences
+                                                sharedPreferences.edit().putString("email", email).apply()
+                                                navController.navigate(Screen.Home.route)
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Gagal masuk",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     } else {
                                         Toast.makeText(
                                             context,
-                                            "Invalid email or password",
+                                            "Email atau password tidak valid",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -152,6 +168,8 @@ fun LoginScreen(navController: NavHostController) {
                                     if (isValidCredentials(email, password)) {
                                         val success = signInWithEmailAndPassword(email, password)
                                         if (success) {
+                                            // Save email to SharedPreferences
+                                            sharedPreferences.edit().putString("email", email).apply()
                                             navController.navigate(Screen.Home.route)
                                         } else {
                                             Toast.makeText(
@@ -169,7 +187,9 @@ fun LoginScreen(navController: NavHostController) {
                                     }
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary,
                                 contentColor = Color.White
@@ -180,9 +200,9 @@ fun LoginScreen(navController: NavHostController) {
 
                         Row(
                             modifier = Modifier
-                                .padding(all = 16.dp)  // Atur padding sesuai kebutuhan
-                                .fillMaxWidth(),  // Mengisi lebar maksimal
-                            verticalAlignment = Alignment.CenterVertically  // Menengahkan konten secara vertikal
+                                .padding(all = 16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Spacer(modifier = Modifier.width(14.dp))
 
@@ -199,6 +219,7 @@ fun LoginScreen(navController: NavHostController) {
                         }
                     }
                 }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 16.dp)
@@ -226,6 +247,7 @@ fun LoginScreen(navController: NavHostController) {
         }
     )
 }
+
 
 private suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
     return withContext(Dispatchers.IO) {
