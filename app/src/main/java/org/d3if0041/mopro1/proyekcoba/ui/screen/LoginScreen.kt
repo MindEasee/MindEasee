@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,9 +52,6 @@ fun LoginScreen(navController: NavHostController) {
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
-
-    // Obtain a reference to SharedPreferences
-    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
     Scaffold(
         topBar = {
@@ -137,10 +135,8 @@ fun LoginScreen(navController: NavHostController) {
                                 onDone = {
                                     if (isValidCredentials(email, password)) {
                                         CoroutineScope(Dispatchers.Main).launch {
-                                            val success = signInWithEmailAndPassword(email, password)
+                                            val success = signInWithEmailAndPassword(email, password, context)
                                             if (success) {
-                                                // Save email to SharedPreferences
-                                                sharedPreferences.edit().putString("email", email).apply()
                                                 navController.navigate(Screen.Home.route)
                                             } else {
                                                 Toast.makeText(
@@ -175,10 +171,8 @@ fun LoginScreen(navController: NavHostController) {
                             onClick = {
                                 CoroutineScope(Dispatchers.Main).launch {
                                     if (isValidCredentials(email, password)) {
-                                        val success = signInWithEmailAndPassword(email, password)
+                                        val success = signInWithEmailAndPassword(email, password, context)
                                         if (success) {
-                                            // Save email to SharedPreferences
-                                            sharedPreferences.edit().putString("email", email).apply()
                                             navController.navigate(Screen.Home.route)
                                         } else {
                                             Toast.makeText(
@@ -257,27 +251,47 @@ fun LoginScreen(navController: NavHostController) {
 }
 
 
-private suspend fun signInWithEmailAndPassword(email: String, password: String): Boolean {
+private suspend fun signInWithEmailAndPassword(email: String, password: String, context: Context): Boolean {
     return withContext(Dispatchers.IO) {
         try {
             val authResult = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
-            authResult.user != null
+            authResult.user?.let { user ->
+                val name = user.displayName ?: "Name"
+                // Save name to SharedPreferences
+                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPreferences.edit().putString("name", name).apply()
+                return@withContext true
+            }
+            false
         } catch (e: Exception) {
             false
         }
     }
 }
 
-private suspend fun createUserWithEmailAndPassword(email: String, password: String): Boolean {
+private suspend fun createUserWithEmailAndPassword(email: String, password: String, name: String, context: Context): Boolean {
     return withContext(Dispatchers.IO) {
         try {
             val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-            authResult.user != null
+            authResult.user?.let { user ->
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(name)
+                    .build()
+                user.updateProfile(profileUpdates).await()
+
+                // Save name to SharedPreferences
+                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                sharedPreferences.edit().putString("name", name).apply()
+
+                return@withContext true
+            }
+            false
         } catch (e: Exception) {
             false
         }
     }
 }
+
 
 private fun isValidCredentials(email: String, password: String): Boolean {
     return email.isNotEmpty() && password.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()

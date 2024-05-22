@@ -278,7 +278,7 @@ private suspend fun createUserWithEmailAndPassword(
                     .build()
                 user.updateProfile(profileUpdates).await()
 
-                // Simpan nama pengguna ke SharedPreferences
+                // Save name to SharedPreferences
                 val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                 sharedPreferences.edit().putString("name", name).apply()
 

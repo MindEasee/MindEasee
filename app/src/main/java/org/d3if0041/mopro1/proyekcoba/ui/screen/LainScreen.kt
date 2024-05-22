@@ -47,8 +47,6 @@ fun LainScreen(navController: NavHostController) {
     // Ambil nama pengguna dari SharedPreferences
     val name = sharedPreferences.getString("name", "Name") ?: "Name"
 
-    val id: String? = "example_id"
-
     val showDialogState = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -116,7 +114,7 @@ fun LainScreen(navController: NavHostController) {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(2.dp)) //
+                Spacer(modifier = Modifier.height(2.dp))
                 // Box Password
                 Box(
                     modifier = Modifier
@@ -202,7 +200,8 @@ fun LainScreen(navController: NavHostController) {
                     }
                 }
                 Spacer(modifier = Modifier.height(2.dp)) // Spacer untuk jarak yang lebih dekat
-                // Box Keluar
+                // Other UI elements...
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -242,24 +241,23 @@ fun LainScreen(navController: NavHostController) {
                         )
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        if (id != null) {
-                            LainAlertDialog(
-                                openDialog = showDialogState.value,
-                                onDismissRequest = { showDialogState.value = false },
-                                onConfirmation = {
-                                    showDialogState.value = false
-                                    // Lakukan navigasi ke halaman login
-                                    navController.navigate("loginScreen") {
-                                        popUpTo(0)
-                                    }
+                        LainAlertDialog(
+                            openDialog = showDialogState.value,
+                            onDismissRequest = { showDialogState.value = false },
+                            onConfirmation = {
+                                showDialogState.value = false
+                                // Clear SharedPreferences on logout
+                                sharedPreferences.edit().clear().apply()
+                                // Lakukan navigasi ke halaman login
+                                navController.navigate("loginScreen") {
+                                    popUpTo(0)
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }
         },
-
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer),
@@ -313,7 +311,7 @@ fun LainScreen(navController: NavHostController) {
                                     text = stringResource(R.string.statistik),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    overflow = TextOverflow.Visible,
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
@@ -360,19 +358,17 @@ fun LainScreen(navController: NavHostController) {
                                     colorFilter = ColorFilter.tint(Color.Gray),
                                     modifier = Modifier.size(20.dp)
                                 )
-                                // Menggunakan string dari resource
                                 Text(
                                     text = stringResource(R.string.lain),
                                     fontSize = 9.sp,
                                     color = Color.Black,
-                                    overflow = TextOverflow.Visible,  // Biarkan teks terlihat sepenuhnya
+                                    overflow = TextOverflow.Visible,
                                     maxLines = 1,
                                     textAlign = TextAlign.Center
                                 )
                             }
                         }
                     }
-
                 }
             )
         },
