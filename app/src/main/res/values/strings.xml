@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">MINDEASE</string>
-    <string name="sangat_baik">Sangat\n Baik</string>
+    <string name="sangat_baik">Sangat Baik</string>
     <string name="baik">Baik</string>
     <string name="biasa">Biasa</string>
     <string name="buruk">Buruk</string>
-    <string name="sangat_buruk">Sangat\n Buruk</string>
+    <string name="sangat_buruk">Sangat Buruk</string>
     <string name="belum_bisa">Belum bisa tambah catatan</string>
     <string name="kembali">Kembali</string>
     <string name="manusia">Manusia</string>
