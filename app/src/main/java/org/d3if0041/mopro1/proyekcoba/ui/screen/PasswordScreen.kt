@@ -1,5 +1,6 @@
 package org.d3if0041.mopro1.proyekcoba.ui.screen
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
@@ -34,15 +41,16 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 @Composable
 fun PasswordScreen(navController: NavHostController) {
     var oldPassword by remember { mutableStateOf("") }
-    var showOldPassword by remember { mutableStateOf(false) }  // State untuk toggle visibility password lama
+    var showOldPassword by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
-    var showPassword by remember { mutableStateOf(false) }  // State untuk toggle visibility password baru
+    var showPassword by remember { mutableStateOf(false) }
     var confirmPassword by remember { mutableStateOf("") }
     val oldPasswordFocusRequest = remember { FocusRequester() }
     val passwordFocusRequest = remember { FocusRequester() }
     val confirmPasswordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val textFieldShape = RoundedCornerShape(12.dp)
 
@@ -102,7 +110,7 @@ fun PasswordScreen(navController: NavHostController) {
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        //Password Lama
+                        // Password Lama
                         OutlinedTextField(
                             value = oldPassword,
                             onValueChange = { oldPassword = it },
@@ -126,7 +134,7 @@ fun PasswordScreen(navController: NavHostController) {
                             keyboardActions = KeyboardActions(onNext = { passwordFocusRequest.requestFocus() })
                         )
 
-                       //Password Baru
+                        // Password Baru
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
@@ -150,12 +158,14 @@ fun PasswordScreen(navController: NavHostController) {
                             keyboardActions = KeyboardActions(onNext = { confirmPasswordFocusRequest.requestFocus() })
                         )
 
-                        //Konfirmasi Password Baru
+                        // Konfirmasi Password Baru
                         OutlinedTextField(
                             value = confirmPassword,
                             onValueChange = { confirmPassword = it },
                             label = { Text("Konfirmasi Password ") },
-                            modifier = Modifier.fillMaxWidth().focusRequester(confirmPasswordFocusRequest),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(confirmPasswordFocusRequest),
                             shape = textFieldShape,
                             visualTransformation = PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions.Default.copy(
@@ -163,12 +173,16 @@ fun PasswordScreen(navController: NavHostController) {
                                 imeAction = ImeAction.Done
                             ),
                             keyboardActions = KeyboardActions(onDone = {
-                                if (isValidCredentials(oldPassword, password, confirmPassword)) {
-                                    navController.navigate("lain")
-                                } else {
-                                    Toast.makeText(context, "Password tidak sesuai", Toast.LENGTH_SHORT).show()
+                                coroutineScope.launch {
+                                    handleChangePassword(
+                                        oldPassword,
+                                        password,
+                                        confirmPassword,
+                                        context,
+                                        navController,
+                                        keyboardController
+                                    )
                                 }
-                                keyboardController?.hide()
                             })
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -176,14 +190,15 @@ fun PasswordScreen(navController: NavHostController) {
                         // Tombol "Ubah"
                         Button(
                             onClick = {
-                                if (isValidCredentials(oldPassword, password, confirmPassword)) {
-                                    navController.navigate("lain")
-                                } else {
-                                    Toast.makeText(
+                                coroutineScope.launch {
+                                    handleChangePassword(
+                                        oldPassword,
+                                        password,
+                                        confirmPassword,
                                         context,
-                                        "Password tidak sesuai",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                        navController,
+                                        keyboardController
+                                    )
                                 }
                             },
                             modifier = Modifier
@@ -212,6 +227,58 @@ fun PasswordScreen(navController: NavHostController) {
     )
 }
 
+private suspend fun handleChangePassword(
+    oldPassword: String,
+    newPassword: String,
+    confirmPassword: String,
+    context: Context,
+    navController: NavHostController,
+    keyboardController: SoftwareKeyboardController?
+) {
+    if (isValidCredentials(oldPassword, newPassword, confirmPassword)) {
+        val success = changePassword(oldPassword, newPassword, context)
+        withContext(Dispatchers.Main) {
+            if (success) {
+                Toast.makeText(context, "Password berhasil diubah", Toast.LENGTH_SHORT).show()
+                navController.navigate("lainScreen") {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            } else {
+                Toast.makeText(context, "Gagal mengubah password", Toast.LENGTH_SHORT).show()
+            }
+        }
+    } else {
+        withContext(Dispatchers.Main) {
+            Toast.makeText(context, "Password tidak sesuai", Toast.LENGTH_SHORT).show()
+        }
+    }
+    keyboardController?.hide()
+}
+
+private suspend fun changePassword(oldPassword: String, newPassword: String, context: Context): Boolean {
+    return withContext(Dispatchers.IO) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null && user.email != null) {
+            val credential = EmailAuthProvider.getCredential(user.email!!, oldPassword)
+
+            try {
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword).await()
+                return@withContext true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext false
+            }
+        } else {
+            return@withContext false
+        }
+    }
+}
+
 private fun isValidCredentials(oldPassword: String, newPassword: String, confirmPassword: String): Boolean {
     return oldPassword.isNotEmpty() && newPassword.isNotEmpty() && newPassword == confirmPassword
 }
@@ -223,3 +290,7 @@ fun PasswordScreenPreview() {
         PasswordScreen(rememberNavController())
     }
 }
+
+
+
+

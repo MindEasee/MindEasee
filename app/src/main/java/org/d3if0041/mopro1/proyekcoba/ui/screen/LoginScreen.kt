@@ -1,4 +1,5 @@
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -48,10 +49,11 @@ import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 fun LoginScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var showPassword by remember { mutableStateOf(false) } // State for toggling password visibility
+    var showPassword by remember { mutableStateOf(false) }
     val passwordFocusRequest = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -133,27 +135,15 @@ fun LoginScreen(navController: NavHostController) {
                             ),
                             keyboardActions = KeyboardActions(
                                 onDone = {
-                                    if (isValidCredentials(email, password)) {
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            val success = signInWithEmailAndPassword(email, password, context)
-                                            if (success) {
-                                                navController.navigate(Screen.Home.route)
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    "Gagal masuk",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                    } else {
-                                        Toast.makeText(
+                                    coroutineScope.launch {
+                                        handleSignIn(
+                                            email,
+                                            password,
                                             context,
-                                            "Email atau password tidak valid",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                            navController,
+                                            keyboardController
+                                        )
                                     }
-                                    keyboardController?.hide()
                                 }
                             ),
                             trailingIcon = {
@@ -169,25 +159,14 @@ fun LoginScreen(navController: NavHostController) {
 
                         Button(
                             onClick = {
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    if (isValidCredentials(email, password)) {
-                                        val success = signInWithEmailAndPassword(email, password, context)
-                                        if (success) {
-                                            navController.navigate(Screen.Home.route)
-                                        } else {
-                                            Toast.makeText(
-                                                context,
-                                                "Gagal masuk",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Email atau password tidak valid",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                                coroutineScope.launch {
+                                    handleSignIn(
+                                        email,
+                                        password,
+                                        context,
+                                        navController,
+                                        keyboardController
+                                    )
                                 }
                             },
                             modifier = Modifier
@@ -250,6 +229,40 @@ fun LoginScreen(navController: NavHostController) {
     )
 }
 
+private suspend fun handleSignIn(
+    email: String,
+    password: String,
+    context: Context,
+    navController: NavHostController,
+    keyboardController: SoftwareKeyboardController?
+) {
+    Log.d("LoginScreen", "SignIn Attempt: Email - $email")
+    if (isValidCredentials(email, password)) {
+        val success = signInWithEmailAndPassword(email, password, context)
+        withContext(Dispatchers.Main) {
+            if (success) {
+                Log.d("LoginScreen", "SignIn Success")
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            } else {
+                Log.d("LoginScreen", "SignIn Failed")
+                Toast.makeText(context, "Gagal masuk", Toast.LENGTH_SHORT).show()
+            }
+        }
+    } else {
+        Log.d("LoginScreen", "Invalid Credentials")
+        withContext(Dispatchers.Main) {
+            Toast.makeText(context, "Email atau password tidak valid", Toast.LENGTH_SHORT).show()
+        }
+    }
+    keyboardController?.hide()
+}
+
 
 private suspend fun signInWithEmailAndPassword(email: String, password: String, context: Context): Boolean {
     return withContext(Dispatchers.IO) {
@@ -269,30 +282,6 @@ private suspend fun signInWithEmailAndPassword(email: String, password: String, 
     }
 }
 
-private suspend fun createUserWithEmailAndPassword(email: String, password: String, name: String, context: Context): Boolean {
-    return withContext(Dispatchers.IO) {
-        try {
-            val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-            authResult.user?.let { user ->
-                val profileUpdates = UserProfileChangeRequest.Builder()
-                    .setDisplayName(name)
-                    .build()
-                user.updateProfile(profileUpdates).await()
-
-                // Save name to SharedPreferences
-                val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                sharedPreferences.edit().putString("name", name).apply()
-
-                return@withContext true
-            }
-            false
-        } catch (e: Exception) {
-            false
-        }
-    }
-}
-
-
 private fun isValidCredentials(email: String, password: String): Boolean {
     return email.isNotEmpty() && password.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
@@ -304,3 +293,4 @@ fun LoginScreenPreview() {
         LoginScreen(rememberNavController())
     }
 }
+

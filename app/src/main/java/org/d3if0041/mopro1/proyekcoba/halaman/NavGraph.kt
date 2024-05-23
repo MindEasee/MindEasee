@@ -38,7 +38,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Awal.route
     ) {
         composable(route = Screen.Awal.route) {
             AwalScreen(navController)
