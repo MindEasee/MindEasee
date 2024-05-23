@@ -4,6 +4,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.model.Note
 
@@ -22,8 +26,15 @@ class NoteViewModel : ViewModel() {
         R.drawable.e to Color(0xD2FF0000)
     )
 
+    private val db = FirebaseFirestore.getInstance()
+
+    init {
+        loadNotesFromFirestore()
+    }
+
     fun addNote(note: Note) {
         _notes.add(note)
+        saveNoteToFirestore(note)
     }
 
     fun getNoteById(id: Int): Note? {
@@ -34,15 +45,64 @@ class NoteViewModel : ViewModel() {
         val index = _notes.indexOfFirst { it.id == updatedNote.id }
         if (index != -1) {
             _notes[index] = updatedNote
+            updateNoteInFirestore(updatedNote)
         }
     }
 
     fun deleteNoteById(id: Int) {
-        _notes.removeAt(id)
+        val note = _notes.removeAt(id)
+        deleteNoteFromFirestore(note)
     }
 
-    // Fungsi untuk mendapatkan warna berdasarkan emotikon yang dipilih
     fun getEmoticonColor(): Color {
         return emoticonColorMap[selectedEmoticon.value] ?: Color.Black
+    }
+
+    private fun saveNoteToFirestore(note: Note) {
+        viewModelScope.launch {
+            try {
+                db.collection("notes").add(note).await()
+            } catch (e: Exception) {
+                // Handle exception
+            }
+        }
+    }
+
+    private fun loadNotesFromFirestore() {
+        viewModelScope.launch {
+            try {
+                val snapshot = db.collection("notes").get().await()
+                val notesList = snapshot.documents.mapNotNull { it.toObject(Note::class.java) }
+                _notes.addAll(notesList)
+            } catch (e: Exception) {
+                // Handle exception
+            }
+        }
+    }
+
+    private fun updateNoteInFirestore(note: Note) {
+        viewModelScope.launch {
+            try {
+                val snapshot = db.collection("notes").whereEqualTo("id", note.id).get().await()
+                for (document in snapshot.documents) {
+                    db.collection("notes").document(document.id).set(note).await()
+                }
+            } catch (e: Exception) {
+                // Handle exception
+            }
+        }
+    }
+
+    private fun deleteNoteFromFirestore(note: Note) {
+        viewModelScope.launch {
+            try {
+                val snapshot = db.collection("notes").whereEqualTo("id", note.id).get().await()
+                for (document in snapshot.documents) {
+                    db.collection("notes").document(document.id).delete().await()
+                }
+            } catch (e: Exception) {
+                // Handle exception
+            }
+        }
     }
 }

@@ -328,9 +328,7 @@ fun EntriScreen(
                                     .height(48.dp),
                                 shape = RoundedCornerShape(24.dp)
                             ) {
-                                Text("Simpan", fontSize = 16.sp,
-                                    color = Color.Black
-                                )
+                                Text("Simpan", fontSize = 16.sp, color = Color.Black)
                             }
                         }
                     }
