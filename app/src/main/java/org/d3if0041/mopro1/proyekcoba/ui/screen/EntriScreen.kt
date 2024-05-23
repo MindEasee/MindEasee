@@ -42,7 +42,11 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, noteId: Int? = null) {
+fun EntriScreen(
+    navController: NavHostController,
+    noteViewModel: NoteViewModel,
+    noteId: Int? = null
+) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -119,7 +123,6 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Spacer(modifier = Modifier.height(12.dp))
 
-
                                 Image(
                                     painter = painterResource(id = noteViewModel.selectedEmoticon.value),
                                     contentDescription = null,
@@ -132,11 +135,18 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 Column(
                                     verticalArrangement = Arrangement.Center,
                                 ) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+
                                     Text(
-                                        text = "Kabar hari ini,\nBiasa",
+                                        text = "Kabar hari ini,",
                                         fontSize = 18.sp,
                                         color = Color.Black,
-                                        modifier = Modifier.offset(y = 6.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp)) // Spacer untuk jarak antara teks
+                                    Text(
+                                        text = noteViewModel.selectedEmoticonText.value, // Menggunakan teks yang dipilih
+                                        fontSize = 18.sp,
+                                        color = Color.Black,
                                     )
                                 }
                             }

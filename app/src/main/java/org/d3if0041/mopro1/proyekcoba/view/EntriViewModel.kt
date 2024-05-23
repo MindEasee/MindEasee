@@ -12,6 +12,8 @@ class NoteViewModel : ViewModel() {
     val notes: List<Note> get() = _notes
 
     var selectedEmoticon = mutableStateOf(R.drawable.casual) // Default image
+    var selectedEmoticonText = mutableStateOf("Biasa") // Default text
+
     private val emoticonColorMap = mapOf(
         R.drawable.a to Color(0xFF009688), // Sesuaikan dengan warna emoticon di AddScreen
         R.drawable.b to Color(0xFF4CAF50),

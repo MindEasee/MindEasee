@@ -229,6 +229,7 @@ fun LoginScreen(navController: NavHostController) {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 private suspend fun handleSignIn(
     email: String,
     password: String,
@@ -293,4 +294,3 @@ fun LoginScreenPreview() {
         LoginScreen(rememberNavController())
     }
 }
-

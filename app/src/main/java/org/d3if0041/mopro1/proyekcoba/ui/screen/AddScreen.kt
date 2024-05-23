@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -42,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
+import org.d3if0041.mopro1.proyekcoba.view.NoteViewModel
 
 class NoteViewModel : ViewModel() {
     val selectedEmoticon = mutableStateOf(R.drawable.a) // Default value for preview
@@ -109,8 +111,9 @@ fun AddScreen(navController: NavHostController, noteViewModel: org.d3if0041.mopr
     }
 }
 
+
 @Composable
-fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro1.proyekcoba.view.NoteViewModel) {
+fun EmoticoonRow(navController: NavController, noteViewModel: NoteViewModel) {
     val emoticonResIds = listOf(
         Pair(R.drawable.a, stringResource(id = R.string.sangat_baik)),
         Pair(R.drawable.b, stringResource(id = R.string.baik)),
@@ -119,7 +122,8 @@ fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro
         Pair(R.drawable.e, stringResource(id = R.string.sangat_buruk))
     )
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         emoticonResIds.forEach { (emoticonResId, text) ->
             val colorFilter = when (emoticonResId) {
@@ -134,6 +138,7 @@ fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.clickable {
                     noteViewModel.selectedEmoticon.value = emoticonResId
+                    noteViewModel.selectedEmoticonText.value = text
                     navController.navigate(Screen.Entri.route)
                 }
             ) {
@@ -143,6 +148,7 @@ fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro
                     modifier = Modifier.size(48.dp),
                     colorFilter = colorFilter
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = text,
                     fontSize = 11.sp,
@@ -153,6 +159,8 @@ fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
