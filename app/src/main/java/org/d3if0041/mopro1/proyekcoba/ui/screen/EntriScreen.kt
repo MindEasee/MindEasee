@@ -119,12 +119,14 @@ fun EntriScreen(navController: NavHostController, noteViewModel: NoteViewModel, 
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Spacer(modifier = Modifier.height(12.dp))
 
+
                                 Image(
-                                    painter = painterResource(R.drawable.casual),
+                                    painter = painterResource(id = noteViewModel.selectedEmoticon.value),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(50.dp)
-                                        .offset(y = 9.dp)
+                                        .offset(y = 9.dp),
+                                    colorFilter = ColorFilter.tint(noteViewModel.getEmoticonColor()) // Menggunakan warna yang sesuai
                                 )
                                 Spacer(modifier = Modifier.width(30.dp))
                                 Column(

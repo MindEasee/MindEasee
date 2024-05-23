@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -24,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -42,10 +43,13 @@ import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme
 
+class NoteViewModel : ViewModel() {
+    val selectedEmoticon = mutableStateOf(R.drawable.a) // Default value for preview
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavHostController) {
+fun AddScreen(navController: NavHostController, noteViewModel: org.d3if0041.mopro1.proyekcoba.view.NoteViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -96,7 +100,7 @@ fun AddScreen(navController: NavHostController) {
                                 fontSize = 17.sp
                             )
                         )
-                        EmoticoonRow(navController)
+                        EmoticoonRow(navController, noteViewModel) // Pass the noteViewModel here
                     }
                 }
                 Spacer(modifier = Modifier.weight(0.6f))  // Remaining space is more, pushing content up
@@ -106,7 +110,7 @@ fun AddScreen(navController: NavHostController) {
 }
 
 @Composable
-fun EmoticoonRow(navController: NavController) {
+fun EmoticoonRow(navController: NavController, noteViewModel: org.d3if0041.mopro1.proyekcoba.view.NoteViewModel) {
     val emoticonResIds = listOf(
         Pair(R.drawable.a, stringResource(id = R.string.sangat_baik)),
         Pair(R.drawable.b, stringResource(id = R.string.baik)),
@@ -128,7 +132,8 @@ fun EmoticoonRow(navController: NavController) {
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.clickable {  // Menambahkan aksi onClick
+                modifier = Modifier.clickable {
+                    noteViewModel.selectedEmoticon.value = emoticonResId
                     navController.navigate(Screen.Entri.route)
                 }
             ) {
@@ -149,13 +154,12 @@ fun EmoticoonRow(navController: NavController) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun AddScreenPreview() {
+    val noteViewModel = org.d3if0041.mopro1.proyekcoba.view.NoteViewModel() // Create an instance of NoteViewModel from the view package
     ProyekCobaTheme {
-        AddScreen(rememberNavController())
+        AddScreen(rememberNavController(), noteViewModel )
     }
 }
-

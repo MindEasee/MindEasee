@@ -38,7 +38,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Awal.route
+        startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Awal.route) {
             AwalScreen(navController)
@@ -71,7 +71,7 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             EntriScreen(navController, noteViewModel)
         }
         composable(route = Screen.Add.route) {
-            AddScreen(navController)
+            AddScreen(navController, noteViewModel)
         }
         composable(route = Screen.Tips.route) {
             TipsScreen(navController)
