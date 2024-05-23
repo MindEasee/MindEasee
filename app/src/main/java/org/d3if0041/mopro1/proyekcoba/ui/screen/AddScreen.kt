@@ -87,10 +87,10 @@ fun AddScreen(navController: NavHostController, noteViewModel: org.d3if0041.mopr
                         .wrapContentSize()
                         .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp))
                         .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                        .padding(16.dp)
+                        .padding(10.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(12.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -145,15 +145,15 @@ fun EmoticoonRow(navController: NavController, noteViewModel: NoteViewModel) {
                 Image(
                     painter = painterResource(id = emoticonResId),
                     contentDescription = null,
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(46.dp),
                     colorFilter = colorFilter
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = text,
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     color = Color.Black,
-                    lineHeight = 12.sp
+                    lineHeight = 11.sp
                 )
             }
         }
