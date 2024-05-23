@@ -43,6 +43,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -281,6 +282,15 @@ private suspend fun createUserWithEmailAndPassword(
                 // Save name to SharedPreferences
                 val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                 sharedPreferences.edit().putString("name", name).apply()
+
+                // Save user data to Firestore
+                val db = FirebaseFirestore.getInstance()
+                val userData = hashMapOf(
+                    "uid" to user.uid,
+                    "name" to name,
+                    "email" to email
+                )
+                db.collection("users").document(user.uid).set(userData).await()
 
                 return@withContext true
             }
