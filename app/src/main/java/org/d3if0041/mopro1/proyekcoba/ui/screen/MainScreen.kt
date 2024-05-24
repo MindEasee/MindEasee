@@ -99,7 +99,8 @@ fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
                 if (noteViewModel.notes.isEmpty()) {
                     GambarBawah()
                 } else {
-                    noteViewModel.notes.forEachIndexed { index, note ->
+                    val currentUserUid = noteViewModel.currentUserUid
+                    noteViewModel.notes.filter { it.uid == currentUserUid }.forEachIndexed { index, note ->
                         NoteItem(
                             note = note,
                             onEditClick = {

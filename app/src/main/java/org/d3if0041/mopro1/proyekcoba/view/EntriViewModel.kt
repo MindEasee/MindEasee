@@ -39,7 +39,7 @@ class NoteViewModel : ViewModel() {
     fun addNote(note: Note) {
         val uid = currentUserUid
         uid?.let { currentUid ->
-            note.uid = currentUid
+            note.uid = currentUid // Set UID pengguna saat ini ke catatan sebelum disimpan
             _notes.add(note)
             saveNoteToFirestore(note)
         }
@@ -95,6 +95,7 @@ class NoteViewModel : ViewModel() {
                 try {
                     val snapshot = db.collection("users").document(uid).collection("notes").get().await()
                     val notesList = snapshot.documents.mapNotNull { it.toObject(Note::class.java) }
+                    _notes.clear() // Bersihkan catatan sebelum menambahkan yang baru
                     _notes.addAll(notesList)
                 } catch (e: Exception) {
                     // Handle exception
@@ -102,6 +103,7 @@ class NoteViewModel : ViewModel() {
             }
         }
     }
+
 
     private fun updateNoteInFirestore(note: Note) {
         viewModelScope.launch {
