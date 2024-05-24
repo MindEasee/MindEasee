@@ -307,12 +307,14 @@ fun EntriScreen(
                                         // Proses simpan data ke ViewModel
                                         val note = Note(
                                             id = noteId ?: 0,
+                                            uid = noteViewModel.currentUserUid, // Menggunakan UID pengguna saat ini
                                             date = selectedDate,
                                             time = selectedTime,
                                             masalah = masalahSaatIni,
                                             pikiran = pikiran,
                                             solusi = solusi
                                         )
+
                                         if (noteId == null) {
                                             noteViewModel.addNote(note)
                                         } else {

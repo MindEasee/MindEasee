@@ -4,10 +4,11 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class Note(
+    val id: Int,
+    var uid: String?, // Menambahkan properti uid
     val date: LocalDate,
     val time: LocalTime,
     val masalah: String,
     val pikiran: String,
-    val solusi: String,
-    val id: Int
+    val solusi: String
 )

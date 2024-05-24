@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -14,6 +15,9 @@ import org.d3if0041.mopro1.proyekcoba.model.Note
 class NoteViewModel : ViewModel() {
     private val _notes = mutableStateListOf<Note>()
     val notes: List<Note> get() = _notes
+    private val auth = FirebaseAuth.getInstance()
+    val currentUserUid: String?
+        get() = auth.currentUser?.uid
 
     var selectedEmoticon = mutableStateOf(R.drawable.casual) // Default image
     var selectedEmoticonText = mutableStateOf("Biasa") // Default text
@@ -33,8 +37,12 @@ class NoteViewModel : ViewModel() {
     }
 
     fun addNote(note: Note) {
-        _notes.add(note)
-        saveNoteToFirestore(note)
+        val uid = currentUserUid
+        uid?.let { currentUid ->
+            note.uid = currentUid
+            _notes.add(note)
+            saveNoteToFirestore(note)
+        }
     }
 
     fun getNoteById(id: Int): Note? {
@@ -42,16 +50,25 @@ class NoteViewModel : ViewModel() {
     }
 
     fun updateNote(updatedNote: Note) {
-        val index = _notes.indexOfFirst { it.id == updatedNote.id }
-        if (index != -1) {
-            _notes[index] = updatedNote
-            updateNoteInFirestore(updatedNote)
+        val uid = currentUserUid
+        uid?.let {
+            updatedNote.uid = uid
+            val index = _notes.indexOfFirst { it.id == updatedNote.id }
+            if (index != -1) {
+                _notes[index] = updatedNote
+                updateNoteInFirestore(updatedNote)
+            }
         }
     }
 
     fun deleteNoteById(id: Int) {
-        val note = _notes.removeAt(id)
-        deleteNoteFromFirestore(note)
+        val uid = currentUserUid
+        uid?.let {
+            val note = _notes.removeAt(id)
+            if (note.uid == uid) {
+                deleteNoteFromFirestore(note)
+            }
+        }
     }
 
     fun getEmoticonColor(): Color {
@@ -59,23 +76,29 @@ class NoteViewModel : ViewModel() {
     }
 
     private fun saveNoteToFirestore(note: Note) {
-        viewModelScope.launch {
-            try {
-                db.collection("notes").add(note).await()
-            } catch (e: Exception) {
-                // Handle exception
+        val uid = note.uid
+        uid?.let {
+            viewModelScope.launch {
+                try {
+                    db.collection("users").document(uid).collection("notes").add(note).await()
+                } catch (e: Exception) {
+                    // Handle exception
+                }
             }
         }
     }
 
     private fun loadNotesFromFirestore() {
-        viewModelScope.launch {
-            try {
-                val snapshot = db.collection("notes").get().await()
-                val notesList = snapshot.documents.mapNotNull { it.toObject(Note::class.java) }
-                _notes.addAll(notesList)
-            } catch (e: Exception) {
-                // Handle exception
+        val uid = currentUserUid
+        uid?.let {
+            viewModelScope.launch {
+                try {
+                    val snapshot = db.collection("users").document(uid).collection("notes").get().await()
+                    val notesList = snapshot.documents.mapNotNull { it.toObject(Note::class.java) }
+                    _notes.addAll(notesList)
+                } catch (e: Exception) {
+                    // Handle exception
+                }
             }
         }
     }
