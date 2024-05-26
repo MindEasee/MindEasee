@@ -82,8 +82,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx:21.0.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2")
 
-
-
     implementation("co.yml:ycharts:2.1.0")
 
     testImplementation("junit:junit:4.13.2")
