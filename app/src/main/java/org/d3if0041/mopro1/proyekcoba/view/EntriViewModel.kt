@@ -61,11 +61,14 @@ class NoteViewModel : ViewModel() {
             updatedNote.uid = uid
             val index = _notes.indexOfFirst { it.id == updatedNote.id }
             if (index != -1) {
+                // Preserve the existing emoticon color
+                updatedNote.emoticonColor = _notes[index].emoticonColor
                 _notes[index] = updatedNote
                 updateNoteInFirestore(updatedNote)
             }
         }
     }
+
 
 
     fun deleteNoteById(id: Int) {
