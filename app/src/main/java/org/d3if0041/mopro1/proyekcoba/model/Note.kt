@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class Note(
-    val id: Int,
+    var id: Int,
     var uid: String,
     val date: LocalDate,
     val time: LocalTime,

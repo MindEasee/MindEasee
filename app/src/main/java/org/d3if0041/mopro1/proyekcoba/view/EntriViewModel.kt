@@ -16,6 +16,9 @@ class NoteViewModel : ViewModel() {
     private val _notes = mutableStateListOf<Note>()
     val notes: List<Note> get() = _notes
     private val auth = FirebaseAuth.getInstance()
+
+    private var nextId = 0
+
     val currentUserUid: String?
         get() = auth.currentUser?.uid
 
@@ -39,7 +42,8 @@ class NoteViewModel : ViewModel() {
     fun addNote(note: Note) {
         val uid = currentUserUid
         uid?.let { currentUid ->
-            note.uid = currentUid // Set UID pengguna saat ini ke catatan sebelum disimpan
+            note.uid = currentUid
+            note.id = nextId++
             _notes.add(note)
             saveNoteToFirestore(note)
         }
@@ -61,15 +65,20 @@ class NoteViewModel : ViewModel() {
         }
     }
 
+
     fun deleteNoteById(id: Int) {
         val uid = currentUserUid
         uid?.let {
-            val note = _notes.removeAt(id)
-            if (note.uid == uid) {
-                deleteNoteFromFirestore(note)
+            val index = _notes.indexOfFirst { it.id == id }
+            if (index != -1) {
+                val note = _notes.removeAt(index)
+                if (note.uid == uid) {
+                    deleteNoteFromFirestore(note)
+                }
             }
         }
     }
+
 
     fun getEmoticonColor(): Color {
         return emoticonColorMap[selectedEmoticon.value] ?: Color.Black
@@ -93,7 +102,8 @@ class NoteViewModel : ViewModel() {
         uid?.let {
             viewModelScope.launch {
                 try {
-                    val snapshot = db.collection("users").document(uid).collection("notes").get().await()
+                    val snapshot =
+                        db.collection("users").document(uid).collection("notes").get().await()
                     val notesList = snapshot.documents.mapNotNull { it.toObject(Note::class.java) }
                     _notes.clear() // Bersihkan catatan sebelum menambahkan yang baru
                     _notes.addAll(notesList)
@@ -106,27 +116,37 @@ class NoteViewModel : ViewModel() {
 
 
     private fun updateNoteInFirestore(note: Note) {
-        viewModelScope.launch {
-            try {
-                val snapshot = db.collection("notes").whereEqualTo("id", note.id).get().await()
-                for (document in snapshot.documents) {
-                    db.collection("notes").document(document.id).set(note).await()
+        val uid = currentUserUid
+        uid?.let {
+            viewModelScope.launch {
+                try {
+                    val snapshot = db.collection("users").document(uid).collection("notes")
+                        .whereEqualTo("id", note.id).get().await()
+                    for (document in snapshot.documents) {
+                        db.collection("users").document(uid).collection("notes")
+                            .document(document.id).set(note).await()
+                    }
+                } catch (e: Exception) {
+                    // Handle exception
                 }
-            } catch (e: Exception) {
-                // Handle exception
             }
         }
     }
 
     private fun deleteNoteFromFirestore(note: Note) {
-        viewModelScope.launch {
-            try {
-                val snapshot = db.collection("notes").whereEqualTo("id", note.id).get().await()
-                for (document in snapshot.documents) {
-                    db.collection("notes").document(document.id).delete().await()
+        val uid = currentUserUid
+        uid?.let {
+            viewModelScope.launch {
+                try {
+                    val snapshot = db.collection("users").document(uid).collection("notes")
+                        .whereEqualTo("id", note.id).get().await()
+                    for (document in snapshot.documents) {
+                        db.collection("users").document(uid).collection("notes")
+                            .document(document.id).delete().await()
+                    }
+                } catch (e: Exception) {
+                    // Handle exception
                 }
-            } catch (e: Exception) {
-                // Handle exception
             }
         }
     }

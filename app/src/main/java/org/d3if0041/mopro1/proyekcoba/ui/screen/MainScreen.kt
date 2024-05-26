@@ -105,7 +105,7 @@ fun MainScreen(navController: NavHostController,
                     } else {
                         val currentUserUid = noteViewModel.currentUserUid
                         noteViewModel.notes.filter { it.uid == currentUserUid }.forEachIndexed { index, note ->
-                            val emoticonColor = Color(0xFF4ECB71) // Warna emotikon sesuai dengan kebutuhan
+                            val emoticonColor = Color(0xFF4ECB71)
                             NoteItem(
                                 note = note,
                                 onEditClick = {
@@ -256,9 +256,6 @@ fun MainScreen(navController: NavHostController,
         }
     )
 }
-
-
-
 
 @Composable
 fun GambarBawah() {
@@ -413,3 +410,4 @@ fun GreetingPreview() {
         MainScreen(navController = navController, noteViewModel = noteViewModel)
     }
 }
+
