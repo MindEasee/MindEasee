@@ -305,7 +305,6 @@ fun EntriScreen(
                                         ).show()
                                     } else {
                                         // Proses simpan data ke ViewModel
-<<<<<<< HEAD
                                         val note = noteViewModel.currentUserUid?.let {
                                             Note(
                                                 id = noteId ?: 0,
@@ -328,22 +327,6 @@ fun EntriScreen(
                                             if (note != null) {
                                                 noteViewModel.updateNote(note)
                                             }
-=======
-                                        val note = Note(
-                                            id = noteId ?: 0,
-                                            uid = noteViewModel.currentUserUid, // Menggunakan UID pengguna saat ini
-                                            date = selectedDate,
-                                            time = selectedTime,
-                                            masalah = masalahSaatIni,
-                                            pikiran = pikiran,
-                                            solusi = solusi
-                                        )
-
-                                        if (noteId == null) {
-                                            noteViewModel.addNote(note)
-                                        } else {
-                                            noteViewModel.updateNote(note)
->>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
                                         }
                                         navController.navigate(Screen.Home.route)
                                     }
