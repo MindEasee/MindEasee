@@ -16,21 +16,42 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+<<<<<<< HEAD
+=======
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+<<<<<<< HEAD
+=======
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+<<<<<<< HEAD
+=======
+import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.CoroutineScope
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+<<<<<<< HEAD
+=======
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
 import org.d3if0041.mopro1.proyekcoba.R
 import org.d3if0041.mopro1.proyekcoba.halaman.Screen
 import org.d3if0041.mopro1.proyekcoba.ui.theme.ProyekCobaTheme

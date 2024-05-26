@@ -6,7 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+<<<<<<< HEAD
 import androidx.compose.foundation.lazy.LazyColumn
+=======
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,10 +44,14 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+<<<<<<< HEAD
 fun MainScreen(navController: NavHostController,
                noteViewModel: NoteViewModel
 ) {
 
+=======
+fun MainScreen(navController: NavHostController, noteViewModel: NoteViewModel) {
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,6 +101,7 @@ fun MainScreen(navController: NavHostController,
         },
 
         content = { padding ->
+<<<<<<< HEAD
             LazyColumn(
                 modifier = Modifier
                     .padding(padding)
@@ -118,6 +126,28 @@ fun MainScreen(navController: NavHostController,
                                 noteViewModel = noteViewModel
                             )
                         }
+=======
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (noteViewModel.notes.isEmpty()) {
+                    GambarBawah()
+                } else {
+                    val currentUserUid = noteViewModel.currentUserUid
+                    noteViewModel.notes.filter { it.uid == currentUserUid }.forEachIndexed { index, note ->
+                        NoteItem(
+                            note = note,
+                            onEditClick = {
+                                navController.navigate("${Screen.Entri.route}/$index")
+                            },
+                            onDeleteClick = {
+                                noteViewModel.deleteNoteById(index)
+                            }
+                        )
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
                     }
                 }
             }
@@ -290,11 +320,15 @@ fun GambarBawah() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
+<<<<<<< HEAD
 fun NoteItem(note: Note, onEditClick: () -> Unit,
              onDeleteClick: () -> Unit,
              emoticonColor: Color,
              noteViewModel: NoteViewModel,
 ) {
+=======
+fun NoteItem(note: Note, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -347,7 +381,11 @@ fun NoteItem(note: Note, onEditClick: () -> Unit,
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit",
+<<<<<<< HEAD
                         tint = Color(0xFF4ECB71), // #4ECB71 dalam format hex
+=======
+                        tint = Color(0xFF4ECB71)
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
                     )
                 }
             }
@@ -373,6 +411,7 @@ fun NoteItem(note: Note, onEditClick: () -> Unit,
                 }
             }
         }
+<<<<<<< HEAD
 
         Spacer(modifier = Modifier.height(6.dp))
 
@@ -396,6 +435,12 @@ fun NoteItem(note: Note, onEditClick: () -> Unit,
             Text("Pikiran: ${note.pikiran}")
             Text("Solusi: ${note.solusi}")
         }
+=======
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Masalah: ${note.masalah}")
+        Text("Pikiran: ${note.pikiran}")
+        Text("Solusi: ${note.solusi}")
+>>>>>>> ab26ce03b8aa18293fab0fb3a59fb840a315b202
     }
 }
 
