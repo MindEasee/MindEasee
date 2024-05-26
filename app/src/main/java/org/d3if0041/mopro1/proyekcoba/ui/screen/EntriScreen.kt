@@ -308,16 +308,16 @@ fun EntriScreen(
                                         val note = noteViewModel.currentUserUid?.let {
                                             Note(
                                                 id = noteId ?: 0,
-                                                uid = it, // Menggunakan UID pengguna saat ini
+                                                uid = it,
                                                 date = selectedDate,
                                                 time = selectedTime,
                                                 masalah = masalahSaatIni,
                                                 pikiran = pikiran,
                                                 solusi = solusi,
-                                                emoticonResourceId = noteViewModel.selectedEmoticon.value // Pastikan ini diatur
-
+                                                emoticonResourceId = noteViewModel.selectedEmoticon.value, // Atur ID gambar emotikon
                                             )
                                         }
+
 
                                         if (noteId == null) {
                                             if (note != null) {

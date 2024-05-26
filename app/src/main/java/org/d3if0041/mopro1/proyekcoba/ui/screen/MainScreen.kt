@@ -410,4 +410,3 @@ fun GreetingPreview() {
         MainScreen(navController = navController, noteViewModel = noteViewModel)
     }
 }
-

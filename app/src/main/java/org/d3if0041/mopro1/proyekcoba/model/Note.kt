@@ -13,4 +13,3 @@ data class Note(
     val solusi: String,
     val emoticonResourceId: Int // Properti ini untuk menyimpan ID sumber daya emotikon
 )
-
