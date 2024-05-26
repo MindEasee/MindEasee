@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807267545962",
+    "project_id": "mindease-e5629",
+    "storage_bucket": "mindease-e5629.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807267545962:android:73a1332bf7e23051f1eb13",
+        "android_client_info": {
+          "package_name": "org.d3if0041.mopro1.proyekcoba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAFoFdqEM8LW4IESnIoR5P-5lJh4TtIIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

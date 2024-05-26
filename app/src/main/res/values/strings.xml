@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">MINDEASE</string>
+    <string name="sangat_baik">Sangat Baik</string>
+    <string name="baik">Baik</string>
+    <string name="biasa">Biasa</string>
+    <string name="buruk">Buruk</string>
+    <string name="sangat_buruk">Sangat Buruk</string>
+    <string name="belum_bisa">Belum bisa tambah catatan</string>
+    <string name="kembali">Kembali</string>
+    <string name="manusia">Manusia</string>
+    <string name="halo">HALO!</string>
+    <string name="lain">Lainnya</string>
+    <string name="statistik">Statistik</string>
+    <string name="tips">Tips</string>
+    <string name="entri">Entri</string>
+    <string name="hai">Hi!</string>
+    <string name="teks_open">
+        Curahkan moodmu, ceritakan\n\nkegiatanmu, dan pantau\n\nemosimu disini tanpa batas!</string>
+    <string name="ganti_password">Ganti Password</string>
+    <string name="tentang_kami">Tentang Kami</string>
+    <string name="kami_teks">TENTANG\n\nKAMI</string>
+    <string name="keluar">Keluar</string>
+    <string name="copyright">Kami adalah tim yang peduli dan berkomitmen pada kesehatan mental Anda.\n
+     Di Mindease, kami percaya bahwa setiap\nlangkah kecil menuju kesejahteraan\nmental sangat berarti. Dengan aplikasi\n
+        kami, Anda dapat mencatat dan menjurnal setiap aspek kehidupan\nsehari-hari
+        Anda, mulai dari mood hingga\n aktivitas, serta permasalahan yang Anda\nhadapi.</string>
+    <string name="password">Password</string>
+    <string name="password_lama">Password Lama</string>
+    <string name="password_baru">Password Baru</string>
+    <string name="konfirmasi_password">Konfirmasi Password</string>
+    <string name="masuk">Masuk</string>
+    <string name="daftar">Register</string>
+    <string name="teks_entri">Kabar Hari ini,\nBiasa</string>
+    <string name="login">Login</string>
+    <string name="pesan_keluar">APA ANDA YAKIN\n INGIN KELUAR?</string>
+    <string name="tombol_keluar">Keluar</string>
+    <string name="tombol_batal">Batal</string>
+
+
+</resources>
