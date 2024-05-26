@@ -114,7 +114,6 @@ fun MainScreen(navController: NavHostController,
                                 onDeleteClick = {
                                     noteViewModel.deleteNoteById(index)
                                 },
-                                emoticonColor = emoticonColor,
                                 noteViewModel = noteViewModel
                             )
                         }
@@ -289,7 +288,6 @@ fun GambarBawah() {
 @Composable
 fun NoteItem(note: Note, onEditClick: () -> Unit,
              onDeleteClick: () -> Unit,
-             emoticonColor: Color,
              noteViewModel: NoteViewModel,
 ) {
     Column(
@@ -382,7 +380,7 @@ fun NoteItem(note: Note, onEditClick: () -> Unit,
                 painter = painterResource(note.emoticonResourceId),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                colorFilter = ColorFilter.tint(noteViewModel.getEmoticonColor())
+                colorFilter = ColorFilter.tint(note.emoticonColor) // Use the note's emoticon color
             )
 
             Spacer(modifier = Modifier.height(8.dp)) // Space between emoticon and text
@@ -395,6 +393,7 @@ fun NoteItem(note: Note, onEditClick: () -> Unit,
         }
     }
 }
+
 
 
 

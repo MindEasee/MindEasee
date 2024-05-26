@@ -44,10 +44,12 @@ class NoteViewModel : ViewModel() {
         uid?.let { currentUid ->
             note.uid = currentUid
             note.id = nextId++
+            note.emoticonColor = emoticonColorMap[note.emoticonResourceId] ?: Color.Black // Set the emoticon color
             _notes.add(note)
             saveNoteToFirestore(note)
         }
     }
+
 
     fun getNoteById(id: Int): Note? {
         return _notes.getOrNull(id)
@@ -113,6 +115,7 @@ class NoteViewModel : ViewModel() {
             }
         }
     }
+
 
 
     private fun updateNoteInFirestore(note: Note) {
